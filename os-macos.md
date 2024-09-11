@@ -1,4 +1,4 @@
-# FATES Installation Guide for macOS
+# FATES Unofficial Installation Guide for macOS
 
 This guide will walk you through the steps to install FATES on macOS.
 
