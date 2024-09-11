@@ -12,7 +12,6 @@ Use at your own discretion.
 ## Table of Contents
 - [Supported Operating Systems](#supported-operating-systems)
 - [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
 
 ## Supported Operating Systems
 Choose the guide for your operating system:
@@ -21,6 +20,3 @@ Choose the guide for your operating system:
 
 ## Troubleshooting
 **No personal support is provided**.
-
-## Contributing
-I welcome contributions!
