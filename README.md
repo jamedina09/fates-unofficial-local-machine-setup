@@ -20,7 +20,7 @@ Choose the guide for your operating system:
 - [Windows Installation](./os-windows.md)
 
 ## Troubleshooting
-**no personal support is provided**.
+**No personal support is provided**.
 
 ## Contributing
 I welcome contributions!
