@@ -16,7 +16,8 @@ Use at your own discretion.
 ## Supported Operating Systems
 Choose the guide for your operating system:
 - [macOS Installation](./os-macos.md)
-- [Windows Installation](./os-windows.md)
+
+~~- [Windows Installation]~~
 
 ## Troubleshooting
 **No personal support is provided**.
