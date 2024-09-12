@@ -15,7 +15,7 @@ Use at your own discretion.
 
 ## Supported Operating Systems
 Choose the guide for your operating system:
-- [macOS Installation](./os-macos.md)
+- [macOS Installation](./os-macos-sonoma.md)
 
 ~~- [Windows Installation]~~
 
