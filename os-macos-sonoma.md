@@ -1,4 +1,4 @@
-# Unofficail Guidelines for manual installation of packages required to run FATES and CLMT in MacOSX Sonoma
+# (UNDER-DEVELOPMENT) Unofficail Guidelines for manual installation of packages required to run FATES and CLMT in MacOSX Sonoma
 
 To install the necessary components, we initially require three packages: CMake, Make (often referred to as gmake), and Wget. While CMake and Make could potentially be installed from source, it is unnecessary to do so, as they are not directly interconnected with the packages required by CTSM and FATES. The packages essential for CTSM and FATES can also be installed using Homebrew. However, a potential concern arises when utilizing Homebrew, as it has a tendency to upgrade all packages, potentially causing disruptions in dependencies. For this reason, it is imperative to install the CTSM and FATES required packages from source. This approach ensures consistent compatibility, irrespective of Homebrew's actions. Building from source affords greater control over the build process, allowing for customization of compile-time options to align with specific requirements. Such control proves to be highly valuable for optimizing performance, enabling desired features, or adapting the software to individual needs. Additionally, Wget, a command-line utility, is being installed to facilitate downloading files from the internet during the installation process.
 
@@ -454,3 +454,133 @@ Notes:
       <env name="ESMFMKFILE">/Users/XXX/esmf/esmf-8.6.1/lib/libO/Darwin.gfortran.64.mpich.default/esmf.mk</env>
     </environment_variables>
 ````
+
+## PORT CIME
+## comment in markdown
+
+I have a ./cime directory with configuration files on my GitHub. Those files need to be located in the home directory of my computer.
+
+## INSTALL CTSM AND FATES
+It is smart to have multiple CTSM versions. So you can go back to previous files and stuff. You clone the repositories and then change the names
+●	Clone the CTSM repository from the specified GitHub URL
+git clone git@github.com:ESCOMP/CTSM.git --branch ctsm5.1.dev160 temp-folder && mv temp-folder CTSM_5_1_dev160
+
+Note: it may complaining about git-lfs. If so, install:
+brew install git-lfs
+
+●	Move into the newly cloned CTSM directory - make sure you go to the right one.
+cd CTSM_5_1_dev160
+
+●	Run the script to manage external dependencies and check out required code
+./manage_externals/checkout_externals
+FIX MACHINES CONFIG - This is for CIME PORTING
+The following key changes should be done in the config_machines.xml file.
+
+●	FORCING DATA PATH
+<DIN_LOC_ROOT_CLMFORC>$ENV{HOME}/projects/cesm-inputdata/atm/datm7</DIN_LOC_ROOT_CLMFORC>
+●	NETCDF PATH
+<environment_variables>
+   <env name="NETCDF_PATH">/usr/local/netcdf</env>
+</environment_variables>
+●	ESMF FILE PATH
+   <environment_variables comp_interface="nuopc">
+      <env name="ESMFMKFILE">/Users/MedinaJA/esmf/esmf-8.6.1/lib/libO/Darwin.gfortran.64.mpich.default/esmf.mk</env>
+    </environment_variables>
+
+TO CHANGE FATES’ PARAMETER FILES
+Install python following the description here:
+INSTALL_PYTHON_AND_ALL
+
+To be able to change fates parameter files and avoid issues.You need special version of the packages for python and a script that is fixed in the fates repository. The script is commit 7b2cdbe1b2a7d8eee436db0f759c632ac5e75e08. The file is downloaded in the directory where this doc file is located. The last working combination of python and packages was.
+Python version 3.11.8 - Numpy version 1.26.4 - Scipy version 1.11
+
+Use pyenv from brew
+First install pyenv:
+brew install pyenv
+
+The check the version of python to install:
+pyenv install --list
+
+Install version3.11.8
+pyenv install 3.11.8
+
+Go to the directory you need to use this, which is basically basically your test cases
+cd /Users/MedinaJA/TEST_CASES
+
+Check available versions from pyenv
+pyenv versions
+
+Make version 3.11.8 local
+pyenv local 3.11.8
+This sets up the specific version of Python for your project directory without affecting the system-wide Python installation. Remember to activate the local version whenever you enter this directory by running pyenv local <python_version> or deactivate it with pyenv local --unset.
+
+Check again available versions from pyenv
+pyenv versions
+
+Restart terminal and check you actually have that version
+python --version
+
+After confirming the right version, install numpy and scipy with:
+pip install numpy==1.26.4 scipy==1.11
+
+Make sure they the versions are not changed when installing them. You need those. If a problem persist, uninstall them with pip uninstall numpy and so on, and reinstall them again.
+
+Also, you need to always use the new FatesPFTIndexSwapper.py file. I placed it in the directory /Users/MedinaJA/GDrive_Science/1_FATES_CASES with the name /Users/MedinaJA/GDrive_Science/1_FATES_CASES/EXTRA_SCRIPTS/MODIFY_FATES_PARAMETER_FILES/BCI_DEFAULT_PARAMETERS/FatesPFTIndexSwapper_NEW.py
+
+RUNNING .SH FILES
+Sometimes you may not be able to run .sh files due to lack of permissions. In such cases, you need to execute the following command first to grant permission to the file, and then you can run it:
+chmod +x ./name.sh
+POST PROCESSING PACKAGES:
+UDUNITS (nco dependency)
+UDUNITS is a software package that provides support for units of physical quantities and their conversion. It is used in scientific computing and data analysis to handle unit conversions, ensure consistency in calculations involving different units, and facilitate the interpretation of physical data. UDUNITS allows you to work with quantities expressed in various units (e.g., meters, seconds, kilograms) and perform conversions between them seamlessly.
+
+brew install udunits
+TEXINFO (nco dependency)
+Texinfo is a documentation system and file format designed for creating and formatting documentation and help files. It was initially developed by Richard Stallman and is commonly used in the GNU project and related software projects. Texinfo allows you to write documentation in a simple and structured manner using plain text files. These files can then be processed to generate various output formats, such as printed manuals, online help systems, and HTML pages.
+brew install texinfo
+NCO
+NCO (NetCDF Operators) is a suite of command-line tools and libraries that allow users to manipulate and analyze data stored in the NetCDF (Network Common Data Form) format. NetCDF is a popular file format for storing scientific data, especially multidimensional data, in a self-describing and platform-independent manner.
+
+●	Navigate to the user's home directory and create a new directory named "nco"
+cd ~/opt
+mkdir nco
+cd nco
+●	Download the NCO source code archive from GitHub
+wget https://github.com/nco/nco/archive/5.1.7.tar.gz
+●	Extract the downloaded archive
+tar xvzf 5.1.7.tar.gz
+●	Navigate into the extracted directory
+cd nco-5.1.7
+●	Configure the installation settings for NCO
+./configure --prefix=/usr/local/nco \
+  NETCDF_INC=/usr/local/netcdf/include \
+  NETCDF_LIB=/usr/local/netcdf/lib \
+  CPPFLAGS=-I/usr/local/include \
+  LDFLAGS=-L/usr/local/lib 
+●	Compile and install NCO (using 8 threads for parallel compilation)
+sudo make -j 8 check install
+●	Append the NCO binary path to the user's shell configuration file
+echo 'export PATH=/usr/local/nco/bin:$PATH' >> ~/.zshrc
+●	Reload the shell configuration to apply the changes
+source ~/.zshrc
+NCVUE
+●	Prerequisites:
+●	Ensure Python is installed on your system.
+●	Install python-tk using Homebrew: brew info python-tk.
+●	Use pip to install ncvue: pip install ncvue.
+●	Installation
+○	Install Python if needed.
+○	Get python-tk via Homebrew.
+○	Install ncvue with pip.
+●	Running the App:
+●	In the terminal, run: ncvue output.nc.
+
+NCL - DOESNT WORK
+wget https://www.earthsystemgrid.org/api/v1/dataset/ncl.662_2.nodap/file/ncl_ncarg-6.6.2-MacOS_10.13_64bit_nodap_gnu710.tar.gz
+tar xvzf ncl_ncarg-6.6.2-MacOS_10.13_64bit_nodap_gnu710.tar.gz -C /usr/local/ncl-6.6.2
+echo 'export PATH=/usr/local/ncl-6.6.2/bin:$PATH' >> ~/.zshrc
+
+NCARG_ROOT=/usr/local/ncl-6.6.2
+    PATH=$NCARG_ROOT/bin:$PATH
+    export NCARG_ROOT
+    export PATH
