@@ -21,7 +21,7 @@ NOTE: Sonoma provides new command line tools (version 15.3 as of May 2024) that 
 
 https://developer.apple.com/download/all/
 
-![alt text](./support_images/Picture1.png "Title")
+![alt text](./images/Picture1.png "Title")
 
 ## Install homebrew
 Homebrew is particularly useful for software developers, system administrators, and users who want to customize their development environment, install specific versions of software, or maintain up-to-date tools and utilities. It can be used to install programming languages, libraries, databases, system utilities, and other software components that are not provided by the operating system's package manager.
