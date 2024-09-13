@@ -451,6 +451,6 @@ Notes:
 
 ```bash
    <environment_variables comp_interface="nuopc">
-      <env name="ESMFMKFILE">/Users/MedinaJA/esmf/esmf-8.6.1/lib/libO/Darwin.gfortran.64.mpich.default/esmf.mk</env>
+      <env name="ESMFMKFILE">/Users/XXX/esmf/esmf-8.6.1/lib/libO/Darwin.gfortran.64.mpich.default/esmf.mk</env>
     </environment_variables>
 ````
