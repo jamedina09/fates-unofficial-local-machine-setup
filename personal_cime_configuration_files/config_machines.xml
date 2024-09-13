@@ -4,7 +4,7 @@
 
   <machine MACH="SI">
     <DESC></DESC>
-    <!-- <NODENAME_REGEX>STRI-L30666</NODENAME_REGEX> -->
+    <!-- <NODENAME_REGEX></NODENAME_REGEX> -->
     <OS>Darwin</OS>
     <COMPILERS>gnu</COMPILERS>
     <MPILIBS>mpich</MPILIBS>
