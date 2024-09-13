@@ -204,6 +204,253 @@ echo 'export PATH=/usr/local/mpich/bin:$PATH' >> ~/.zshrc
 source ~/.zshrc
 ````
 
-### TESTS
+## TESTS
 
 Here we need to verify whether the installations of GCC and MPICH were successful. Several files are located in the folder "testing". I did not author these testing files; I'll provide the links when I remember where I got them from. These files will help us determine the success of the installations. If the exercises fail, it indicates an incorrect installation, requiring us to repeat the process. To execute the files, open each script and run the last two lines that are commented.
+
+## EXPAT
+Expat is an XML parsing library that provides a set of functions and tools for reading, interpreting, and manipulating XML (eXtensible Markup Language) documents. XML is a widely used markup language for structuring and representing data in a human-readable and machine-readable format. Expat allows software applications to efficiently parse and process XML data, making it an essential component for various programming tasks involving XML.
+
+●	Change directory to the user's 'opt' directory
+```bash
+cd ~/opt
+````
+●	Create a new directory called 'expat'
+```bash
+mkdir expat
+````
+●	Navigate into the newly created 'expat' directory
+```bash
+cd expat
+````
+●	Download the Expat version 2.5.0 source code archive using wget
+```bash
+wget https://github.com/libexpat/libexpat/releases/download/R_2_5_0/expat-2.5.0.tar.bz2
+````
+●	Extract the downloaded Expat source code archive
+```bash
+tar -zxvf expat-2.5.0.tar.bz2
+````
+●	Navigate into the extracted Expat source code directory
+```bash
+cd expat-2.5.0
+````
+●	Configure the Expat build using default options
+```bash
+./configure
+````
+●	Build Expat using multiple CPU cores (specified by -j 8)
+```bash
+make -j 8
+````
+●	Install Expat
+```bash
+sudo make install
+````
+
+## ZLIB
+ZLIB is a widely used software library for data compression. It provides a set of functions and algorithms for compressing and decompressing data, which is useful for reducing the size of files or data streams for storage or transmission. ZLIB is commonly used in a variety of applications, including file formats like gzip and PNG, network protocols, and software distributions. It employs the Deflate compression algorithm, which combines LZ77 compression and Huffman coding.
+
+Installing libraries like zlib before installing HDF5 (Hierarchical Data Format) and NetCDF (Network Common Data Form) is important because these libraries are often dependencies of HDF5 and NetCDF.
+
+Check latest version here:
+https://www.zlib.net/
+
+●	Navigate to the home directory and create a folder named "zlib" to work in.
+```bash
+cd ~/opt
+mkdir zlib
+cd zlib
+````
+●	Download the ZLIB source code archive from the specified URL.
+```bash
+wget http://www.zlib.net/zlib-1.3.1.tar.gz
+````
+●	Extract and navigate to the downloaded archive.
+```bash
+tar -zxvf zlib-1.3.1.tar.gz
+cd zlib-1.3.1
+````
+●	Configure the build process, specifying the installation prefix. This sets the destination directory for the installed files.
+```bash
+./configure --prefix=/usr/local/hdf5_zlib
+````
+●	Compile the code and run the tests, making use of multiple CPU cores (-j 8).
+```bash
+sudo make -j 8 check install
+````
+
+## HDF5
+HDF5 (Hierarchical Data Format version 5) is a versatile and flexible file format and library designed for managing and storing large and complex datasets. It is widely used in scientific computing, data analysis, and research environments to handle structured and unstructured data, as well as metadata. HDF5 provides features for data organization, compression, parallel I/O, and portability across different platforms and programming languages. It is especially popular in fields such as astronomy, climate modeling, and other scientific domains where efficient data storage, access, and sharing are essential.
+
+●	Navigate to the home directory and create a folder named "hdf5" to work in.
+```bash
+cd ~/opt
+mkdir hdf5
+cd hdf5
+````
+●	Download the HDF5 source code archive from the specified URL.
+```bash
+wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.14/hdf5-1.14.1/src/hdf5-1.14.1-2.tar.gz
+````
+●	Extract and navigate to the downloaded archive.
+```bash
+tar -zxvf hdf5-1.14.1-2.tar.gz
+cd hdf5-1.14.1-2
+````
+●	Configure the build process, specifying the zlib installation directory and installation prefix. Enabling Fortran and parallel features, and using the mpicc compiler for parallel support.
+```bash
+./configure --with-zlib=/usr/local/hdf5_zlib \
+--prefix=/usr/local/hdf5_zlib \
+--enable-fortran \
+--enable-parallel \
+CC=mpicc
+````
+●	Compile the code and run tests using multiple CPU cores (-j 8).
+```bash
+sudo make -j 8 check install
+````
+●	Add HDF5 binaries to the PATH environment variable.
+```bash
+echo 'export PATH=/usr/local/hdf5_zlib/bin:$PATH' >> ~/.zshrc
+source ~/.zshrc
+````
+
+### NETCDF-C
+NetCDF (Network Common Data Form) is a set of software libraries and data formats designed for storing, accessing, and sharing scientific data. It provides a standardized way to represent and organize various types of data, making it particularly well-suited for applications in the fields of atmospheric, oceanic, and climate sciences, as well as other scientific domains.
+
+●	Navigate to the home directory and create a folder named "netcdf-c" to work in.
+```bash
+cd ~/opt
+mkdir netcdf-c
+cd netcdf-c
+````
+●	Download the NetCDF-C source code archive from the provided URL.
+```bash
+wget https://downloads.unidata.ucar.edu/netcdf-c/4.9.2/netcdf-c-4.9.2.tar.gz
+````
+●	Extract the downloaded archive.
+```bash
+tar -zxvf netcdf-c-4.9.2.tar.gz
+````
+●	Move into the extracted directory.
+```bash
+cd netcdf-c-4.9.2
+````
+●	Set compiler and linker flags for HDF5 and zlib libraries. Configure the build process, specifying installation prefix and enabling parallel tests.
+```bash
+./configure \
+CPPFLAGS=-I/usr/local/hdf5_zlib/include \
+LDFLAGS=-L/usr/local/hdf5_zlib/lib \
+--prefix=/usr/local/netcdf \
+--enable-parallel-tests \
+CC=mpicc
+````
+●	Compile the code and run tests using multiple CPU cores (-j 8).
+```bash
+sudo make -j 8 check install
+````
+●	Add NetCDF binaries to the PATH environment variable.
+```bash
+echo 'export PATH=/usr/local/netcdf/bin:$PATH' >> ~/.zshrc
+source ~/.zshrc
+````
+●	Check NetCDF configuration using nc-config.
+```bash
+nc-config --all
+````
+
+## NETCDF-FORTRAN
+NetCDF-Fortran is a component of the NetCDF software suite that provides Fortran language bindings for working with NetCDF data files. Fortran is a programming language commonly used in scientific and engineering applications, and NetCDF-Fortran allows Fortran programs to read from and write to NetCDF files seamlessly. It extends the capabilities of the core NetCDF library by enabling Fortran-specific data manipulation and access.
+
+●	Navigate to the home directory and create a folder named "netcdf-fortran" to work in.
+```bash
+cd ~/opt
+mkdir netcdf-fortran
+cd netcdf-fortran
+````
+●	Download the NetCDF-Fortran source code archive from the provided URL.
+```bash
+wget https://downloads.unidata.ucar.edu/netcdf-fortran/4.6.1/netcdf-fortran-4.6.1.tar.gz
+````
+●	Extract the downloaded archive.
+```bash
+tar -zxvf netcdf-fortran-4.6.1.tar.gz
+cd netcdf-fortran-4.6.1
+````
+●	Set the Fortran compiler, compiler flags, and linker flags for NetCDF library. Configure the build process, specifying installation prefix and enabling parallel tests.
+```bash
+./configure \
+CPPFLAGS=-I/usr/local/netcdf/include \
+LDFLAGS=-L/usr/local/netcdf/lib \
+--prefix=/usr/local/netcdf \
+--enable-parallel-tests \
+FC=mpif90
+````
+●	Compile the code and run tests using multiple CPU cores (-j 8).
+```bash
+make -j 8
+sudo make install
+````
+●	Check NetCDF configuration using nc-config.
+```bash
+make check
+nf-config –all
+````
+
+## ESMF
+ESMF stands for Earth System Modeling Framework. It is an open-source software framework developed for building and coupling complex Earth system models. ESMF provides a set of tools and libraries that facilitate the development, execution, and coupling of models that simulate different components of the Earth system, such as the atmosphere, ocean, land surface, and more. It is widely used in climate and weather research, as well as other Earth science disciplines.
+
+●	Create a folder named "esmf" in the home directory
+```bash
+cd ~/
+mkdir esmf
+cd esmf
+````
+●	Download the latest version of ESMF (v8.6.1) from GitHub
+```bash
+wget https://github.com/esmf-org/esmf/archive/refs/tags/v8.6.1.tar.gz
+````
+●	Extract the downloaded tarball
+```bash
+tar -zxvf v8.6.1.tar.gz
+````
+●	Navigate to the extracted ESMF directory
+```bash
+cd esmf-8.6.1 
+````
+●	Set environment variables required for ESMF configuration
+```bash
+export ESMF_DIR=/Users/MedinaJA/esmf/esmf-8.6.1
+export ESMF_COMPILER=gfortran
+export ESMF_COMM=mpich
+export ESMF_NETCDF=nc-config
+export ESMF_NETCDF_INCLUDE=/usr/local/netcdf/include
+export ESMF_NETCDF_LIBPATH=/usr/local/netcdf/lib
+export ESMF_NETCDF_LIBS='-lnetcdff -lnetcdf'
+````
+●	Compile ESMF using the "make" command with parallel processing (-j8 for 8 parallel jobs)
+```bash
+gmake -j8
+````
+●	Install ESMF
+```bash
+gmake install
+````
+
+Notes: 
+●	The key file is installed in:
+```bash
+/Users/XXX/esmf/esmf-8.6.1/lib/libO/Darwin.gfortran.64.mpich.default
+````
+●	The key file path is:
+```bash
+/Users/XXX/esmf/esmf-8.6.1/lib/libO/Darwin.gfortran.64.mpich.default/esmf.mk
+````
+●	The environmental variable for the config.machine is:
+
+```bash
+   <environment_variables comp_interface="nuopc">
+      <env name="ESMFMKFILE">/Users/MedinaJA/esmf/esmf-8.6.1/lib/libO/Darwin.gfortran.64.mpich.default/esmf.mk</env>
+    </environment_variables>
+````
