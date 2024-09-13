@@ -7,7 +7,7 @@ This repository provides an **unofficial guide** for installing the FATES progra
 ## Disclaimer
 - This guide is **not officially endorsed** by any development team.
 - **I do not offer support** for this guide or the installation process.
-- The guide is maintained **solely by me**, and updates are made based on my availability.
+- The guide is (currently) maintained **solely by me**, and updates are made based on my availability.
 
 Use at your own discretion.
 
