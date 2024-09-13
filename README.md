@@ -1,4 +1,4 @@
-# FATES Unofficial Installation Guide on Local Machines - Work-In-Progress
+# FATES (and CTSM) Unofficial Installation Guide on Local Machines - Work-In-Progress
 
 This repository provides an **unofficial guide** for installing the FATES program on various operating systems. The instructions are divided by platform and software requirements.
 
