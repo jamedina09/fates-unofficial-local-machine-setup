@@ -1,2 +1,2 @@
-These files need to be within a folder named .cime in your home directory.
-Refer to CIME PORTING for more details on this.
+These files must be placed in a folder named .cime within your home directory.
+Refer to CIME Porting for more details.
