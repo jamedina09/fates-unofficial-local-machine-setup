@@ -3,7 +3,7 @@
 This repository provides an **unofficial guide** for installing the FATES program on various operating systems. The instructions are divided by platform and software requirements.
 
 ## Disclaimer
-- This guide is **not officially endorsed** by the FATES development team.
+- This guide is **not officially endorsed** by the any development team.
 - **I do not offer support** for this guide or the installation process.
 - The guide is maintained **solely by me**, and updates are made based on my availability.
 
