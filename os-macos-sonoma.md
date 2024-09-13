@@ -142,3 +142,68 @@ ln -s /usr/local/gcc-13/bin/gcc-13 /usr/local/bin/gcc
 ln -s /usr/local/gcc-13/bin/g++-13 /usr/local/bin/g++
 ln -s /usr/local/gcc-13/bin/gfortran-13 /usr/local/bin/gfortran
 ````
+
+## MPICH
+
+MPICH is an implementation of the Message Passing Interface (MPI), a standardized and widely used programming model for developing parallel and distributed computing applications. MPI is specifically designed for building applications that run on multiple processors or compute nodes, enabling efficient communication and coordination between these processes. MPICH provides the infrastructure and runtime support needed to create and manage parallel programs that can be executed on clusters, supercomputers, and other distributed computing environments.
+
+```bash
+curl -L -O https://www.mpich.org/static/downloads/4.1.2/mpich-4.1.2.tar.gz
+````
+
+Note: When I’m working with the wifi off, mpich does not really work on my computer. It is a weird behaviour and I do not the reason.
+
+●	Change directory to the user's 'opt' directory
+```bash
+cd ~/opt
+````
+●	Create a new directory called 'mpich'
+```bash
+mkdir mpich
+````
+●	Navigate into the newly created 'mpich' directory
+```bash
+cd mpich
+````
+●	Download the MPICH version 4.1.2 source code archive using curl
+```bash
+wget https://www.mpich.org/static/downloads/4.1.2/mpich-4.1.2.tar.gz
+````
+●	Extract the downloaded MPICH source code archive
+```bash
+tar -zxvf mpich-4.1.2.tar.gz
+````
+●	Navigate into the extracted MPICH source code directory
+```bash
+cd mpich-4.1.2
+````
+●	Configure the MPICH build with specified options:
+-	Install MPICH in /usr/local/mpich-4.1.2 directory
+-	Use specific GCC compiler versions for C, C++, and Fortran
+```bash
+./configure --prefix=/usr/local/mpich \
+CC=/usr/local/gcc-13/bin/gcc-13 \
+CXX=/usr/local/gcc-13/bin/g++-13 \
+FC=/usr/local/gcc-13/bin/gfortran-13 \
+FC77=/usr/local/gcc-13/bin/gfortran-13
+````
+●	Build MPICH using multiple CPU cores (specified by -j 8)
+```bash
+make -j 8
+````
+●	Install MPICH
+```bash
+sudo make install
+````
+●	Append the MPICH bin directory to the user's shell PATH in the .zshrc file
+```bash
+echo 'export PATH=/usr/local/mpich/bin:$PATH' >> ~/.zshrc
+````
+●	Reload the updated .zshrc file to apply the new PATH configuration
+```bash
+source ~/.zshrc
+````
+
+### TESTS
+
+Here we need to verify whether the installations of GCC and MPICH were successful. Several files are located in the folder "testing". I did not author these testing files; I'll provide the links when I remember where I got them from. These files will help us determine the success of the installations. If the exercises fail, it indicates an incorrect installation, requiring us to repeat the process. To execute the files, open each script and run the last two lines that are commented.
