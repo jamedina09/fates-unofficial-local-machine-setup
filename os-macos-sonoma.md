@@ -463,10 +463,13 @@ I have a ./cime directory with configuration files on my GitHub. Those files nee
 ## INSTALL CTSM AND FATES
 It is smart to have multiple CTSM versions. So you can go back to previous files and stuff. You clone the repositories and then change the names
 ●	Clone the CTSM repository from the specified GitHub URL
+```bash
 git clone git@github.com:ESCOMP/CTSM.git --branch ctsm5.1.dev160 temp-folder && mv temp-folder CTSM_5_1_dev160
-
+````
 Note: it may complaining about git-lfs. If so, install:
+```bash
 brew install git-lfs
+````
 
 ●	Move into the newly cloned CTSM directory - make sure you go to the right one.
 ```bash
