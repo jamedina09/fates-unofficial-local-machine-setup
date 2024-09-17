@@ -1,4 +1,4 @@
-## Anadonda. 
+## Anadonda Python Configuration on MacOS Sonoma
 
 Anaconda will install Python and several other packages. Everything will be bundle together.
 Anaconda also comes with conda. Conda is a package manager that will help you install packages that are not included in Anaconda.
