@@ -7,63 +7,63 @@ Along with conda, and Anaconda packages, it comes with other tools such as Jupyt
 If you do not want to use Anaconda, you can install Python from the official Python website.
 However, using Anaconda is recommended because is nice to create environments and manage packages.
 
-## Installing Anaconda
+### Installing Anaconda
 
 Go to:
 https://www.anaconda.com/download
 
 Insert your email and you'll get a link to download Anaconda.
 
-## Use Python
+### Use Python
 You will have a base python version. My version is Python 3.12.4. You can check your version by typing in the terminal:
 ```bash
 python --version
 ```
 
-## Create a new environment
+### Create a new environment
 You can create a new environment by typing in the terminal:
 
 ```bash
 conda create --name test_env python=3.7
 ```
 
-## Activate the environment
+### Activate the environment
 
 ```bash
 conda activate test_env
 ```
 
-## Check installed packages
+### Check installed packages
     
 ```bash
 conda list
 ```
 
-## Install a package
+### Install a package
 
 ```bash
 conda install numpy
 ```
 
-## Check the installed packages
+### Check the installed packages
 
 ```bash
 conda list
 ```
 
-## Check the version of Python
+### Check the version of Python
 
 ```bash
 python --version
 ```
 
-## Deactivate the environment
+### Deactivate the environment
 
 ```bash
 conda deactivate
 ```
 
-## Delete the environment
+### Delete the environment
 
 ```bash
 conda remove --name test_env --all
