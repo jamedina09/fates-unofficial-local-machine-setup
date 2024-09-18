@@ -21,6 +21,7 @@ Use at your own discretion.
 Choose the guide for your operating system:
 - [macOS Sonoma Source Installation - Intel](./os-macos-sonoma-intel.md)
 - [macOS Sonoma Homebrew Installation - Intel](./os-macos-sonoma-intel-homebrew.md)
+- [macOS Big Sur Source Installation - Intel](./os-macos-bigsur-intel.md)
 
 ~~- [Windows Installation]~~
 
