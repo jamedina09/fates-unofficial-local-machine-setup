@@ -27,7 +27,7 @@ Choose the guide for your operating system:
 ~~- [Windows Installation]~~
 
 ## Shell scripts to run FATES
-I included a few basic shell scripts to test the the installation of the models. These scripts are located in the `shell_scripts` directory.
+I included a few basic shell scripts to test the the installation of the models. These scripts are located in the  [shell_scripts](./shell_scripts/README.md) directory.
 
 ## Troubleshooting
 **No personal support is provided**.
