@@ -202,10 +202,10 @@ Note that i'm explicitly calling the gcc-14, g++-14, and gfortran-14 compilers. 
 
 Also note I'm defining the same gfortran for FC and FC77. Modern Fortran compilers, such as gfortran (from GCC), are capable of compiling both Fortran 77 and newer Fortran standards.
 
-- Build MPICH using multiple CPU cores (specified by -j 8)
+- Build MPICH using multiple CPU cores (specified by -j8)
 
 ```bash
-make -j 8
+sudo make -j8
 ````
 
 - Install MPICH
@@ -281,10 +281,10 @@ FC=/usr/local/bin/gfortran-14 \
 FC77=/usr/local/bin/gfortran-14
 ````
 
-- Build Expat using multiple CPU cores (specified by -j 8)
+- Build Expat using multiple CPU cores (specified by -j8)
 
 ```bash
-make -j 8
+sudo make -j8
 ````
 
 - Install Expat
@@ -329,12 +329,13 @@ cd zlib-1.3.1
 ./configure --prefix=/usr/local/hdf5_zlib
 ````
 
-- Compile the code and run the tests, making use of multiple CPU cores (-j 8).
+- Compile the code and run the tests, making use of multiple CPU cores (-j8).
 
 I included testing in the make command. If you want to skip testing, you can remove the check option.
 
 ```bash
-sudo make -j 8 check install
+sudo make -j8 install
+sudo make -j8 check
 ````
 
 ## HDF5
@@ -375,12 +376,14 @@ FC=/usr/local/mpich/bin/mpif90 \
 FC77=/usr/local/mpich/bin/mpif77
 ````
 
-- Compile the code and run tests using multiple CPU cores (-j 8).
+- Compile the code and run tests using multiple CPU cores (-j8).
 
-I included testing in the make command. If you want to skip testing, you can remove the check option. Testing takes a long time.
+Testing the installation takes long time. If you want to install and then test, do can do the following. If you dont want to test, you can remove the second line, with the check option.
 
 ```bash
-sudo make -j 8 check install
+sudo make -j8 install
+sudo make -j8 check
+
 ````
 
 - Add HDF5 binaries to the PATH environment variable.
@@ -428,15 +431,19 @@ CPPFLAGS=-I/usr/local/hdf5_zlib/include \
 LDFLAGS=-L/usr/local/hdf5_zlib/lib \
 --prefix=/usr/local/netcdf \
 --enable-parallel-tests \
-CC=mpicc
+CC=mpicc \
+CXX=mpicxx \
+FC=mpif90 \
+FC77=mpif77
 ````
 
-- Compile the code and run tests using multiple CPU cores (-j 8).
+- Compile the code and run tests using multiple CPU cores (-j8).
 
 I included testing in the make command. If you want to skip testing, you can remove the check option.
 
 ```bash
-sudo make -j 8 check install
+sudo make -j8 install
+sudo make -j8 check
 ````
 
 - Add NetCDF binaries to the PATH environment variable.
@@ -485,20 +492,22 @@ CPPFLAGS=-I/usr/local/netcdf/include \
 LDFLAGS=-L/usr/local/netcdf/lib \
 --prefix=/usr/local/netcdf \
 --enable-parallel-tests \
-FC=mpif90
+CC=mpicc \
+CXX=mpicxx \
+FC=mpif90 \
+FC77=mpif77
 ````
 
-- Compile the code and run tests using multiple CPU cores (-j 8).
+- Compile the code and run tests using multiple CPU cores (-).
 
 ```bash
-make -j 8
-sudo make install
+sudo make -j8 install
+sudo make -j8 check
 ````
 
 - Check NetCDF configuration using nc-config.
 
 ```bash
-make check
 nf-config –all
 ````
 
@@ -512,37 +521,37 @@ The link to download is here: <https://earthsystemmodeling.org/>
 
 ```bash
 cd ~
-mkdir opt
 cd opt
-
+mkdir esmf
+cd esmf
 ````
 
 - Download the .tar.gz file to that folder and unzip it.
 
 ```bash
 wget https://github.com/esmf-org/esmf/archive/refs/tags/v8.6.1.tar.gz
-tar -zxvf v8.6.1.tar.gz
+tar -xvf v8.6.1.tar.gz
 cd esmf-8.6.1
 ````
 
 - Export environmental variables:
 
+
 ```bash
-export ESMF_DIR=/Users/MedinaJA/esmf/esmf-8.6.1
+export ESMF_DIR=/Users/MedinaJA/opt/esmf/esmf-8.6.1
 export ESMF_COMPILER=gfortran
-export ESMF_COMM=openmpi
-export ESMF_PNETCDF=pnetcdf-config
-export ESMF_PNETCDF_INCLUDE=/usr/local/Cellar/pnetcdf/1.13.0/include
-export ESMF_PNETCDF_LIBPATH=/usr/local/Cellar/pnetcdf/1.13.0/lib
-export ESMF_PNETCDF_LIBS='-lpnetcdf'
-export ESMF_PIO=internal
+export ESMF_COMM=mpich
+export ESMF_NETCDF=nc-config
+export ESMF_NETCDF_INCLUDE=/usr/local/netcdf/include
+export ESMF_NETCDF_LIBPATH=/usr/local/netcdf/lib
+export ESMF_NETCDF_LIBS='-lnetcdff -lnetcdf_c++ -lnetcdf'
 ````
 
 - Install as follows:
 
 ```bash
-gmake -j8 
-gmake install
+make -j8
+make -j8 check
 ````
 
 ## INSTALL CTSM

@@ -456,11 +456,11 @@ export ESMF_NETCDF_LIBS='-lnetcdff -lnetcdf'
 ````
 -	Compile ESMF using the "make" command with parallel processing (-j8 for 8 parallel jobs)
 ```bash
-gmake -j8
+make -j8
 ````
 -	Install ESMF
 ```bash
-gmake install
+make -j8 check
 ````
 
 Notes: 

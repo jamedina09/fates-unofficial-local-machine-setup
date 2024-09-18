@@ -2,7 +2,7 @@
 
 ***This guide is a work-in-progress and is not yet complete.***
 
-This repository provides an **unofficial guide** for installing the FATES program on various operating systems. The instructions are divided by platform and software requirements.
+This repository provides an **unofficial guide** for installing the FATES program on MacOS. There are a couple fo ways to install the required packages to run the model. The first way requires installing everything from source, while the second way uses Homebrew to install some of the dependencies. If you have, for exmaple, MacOS Big Sur, you can install everything from source. If you have MacOS Sonoma, you can also install everything from source, but need to make some changes. You can also combine Homberew and source packages. 
 
 I also provide a guide to installing Python and Miniconda on macOS Sonoma here: [Miniconda-Python](./python_config_macos_sonoma.md). This will reduce a couple of headaches when running the model later on.
 
