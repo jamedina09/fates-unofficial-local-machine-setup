@@ -47,20 +47,81 @@ source ~/.zshrc
 ````
 
 
-## Install GCC
+##  GCC
 ```bash
 brew install gcc@14 
 cd /usr/local/bin
+````
+
+Create symbolic links to the gcc, g++, and gfortran executables.
+
+```bash
 ln -s gcc-14 gcc
 ln -s g++-14 g++
 ln -s gfortran-14 gfortran
 ````
+## Modify brew env variables
 
-## MPICH
+Check the environment variables used by default by brew by typing:
+
 ```bash
-brew install mpich --cc=gcc-14 --build-from-source
+brew --env
 ````
 
+- To have brew always use gcc, add the following to your .zshrc (or .bash_profile) file:
+
+```bash
+alias brew='HOMEBREW_CC=gcc-14 HOMEBREW_CXX=g++-14 brew'
+````
+
+- source the .zshrc file to apply the changes.
+
+```bash
+source ~/.zshrc
+````
+
+- Check the environment variables used by brew again:
+
+```bash
+brew --env
+````
+
+The output should show the new environment variables.
+
+```bash
+HOMEBREW_CC: gcc-14
+HOMEBREW_CXX: g++-14
+...
+````
+
+You'll notice that when I install any package using brew, I explicitly tell brew to use gcc-14 (i.e., --cc=gcc-14). This may not be necessary as I have already set the environment variables to use gcc-14. However, I prefer to be explicit about it.
+
+
+## OpenMPI
+```bash
+brew install open-mpi --cc=gcc-14 --build-from-source
+````
+
+<!--- brew install mpich --cc=gcc-14 --build-from-source -->
+
+
+## HDF5
+```bash
+brew install hdf5-mpi --cc=gcc-14 --build-from-source
+````
+
+<!-- brew install hdf5 --cc=gcc-14 --build-from-source  -->
+
+## NETCDF
+```bash
+brew install pnetcdf --cc=gcc-14 --build-from-source 
+````
+Check installation by typing: 
+```bash
+pnetcdf-config --all
+````
+
+<!---
 ## NETCDF
 ```bash
 brew install netcdf --cc=gcc-14 --build-from-source 
@@ -78,98 +139,136 @@ Check installation by typing:
 ```bash
 nf-config
 ````
+-->
 
-## NCO
-Nco is needed to concatenate netcdf files. 
+## To avoid potential problems with brew
+Homebrew always upgrades the packages when there is a new version. For example, if brew automatically upgrades gcc, then, packages like open-mpi or pnetcdf won't work properly. The solution is to tell brew to not update certain packages with the option brew pin.More details here:
+
+https://docs.brew.sh/FAQ#how-do-i-stop-certain-formulae-from-being-updated
+
 ```bash
-brew install nco
+brew pin gcc@14 
+brew pin open-mpi
+brew pin hdf5-mpi
+brew pin pnetcdf
 ````
 
-## NCVIEW 
-```bash
-brew install ncview
-````
+## Testing installations
+
+I provide testing files in the folder testing. You can download them and test the installation of the packages.
+
+Inside each file, you will find at the end the command to compile the file. 
 
 ## ESMF
-I installed this app on the home directory. For future use, it might be wise to include it inside another folder. I mean, create a folder for external apps in the home directory and install all apps there. This folder can also serve as a directory for manual installation of NetCDF, hdf5, and any other required for CTSM/CESM.
 
+To run the model, we need to install the National Unified Operational Prediction Capability (NUOPC) layer, which is a common model architecture for constructing coupled models from a set of interoperable components.
 
-You need to download esmf from: https://earthsystemmodeling.org/ 
+The link to download is here: https://earthsystemmodeling.org/
 
-Unzip and install as follows:
+- Create a folder in the home directory to install ESMF. 
 
 ```bash
-export ESMF_DIR=/Users/MedinaJA/esmf-8.4.2
+cd ~
+mkdir opt
+cd opt
+
+````
+
+- Download the .tar.gz file to that folder and unzip it. 
+
+```bash
+wget https://github.com/esmf-org/esmf/archive/refs/tags/v8.6.1.tar.gz
+tar -zxvf v8.6.1.tar.gz
+cd esmf-8.6.1
+````
+
+- Export environmental variables:
+
+```bash
+export ESMF_DIR=/Users/MedinaJA/esmf/esmf-8.6.1
 export ESMF_COMPILER=gfortran
-export ESMF_COMM=mpich
-export ESMF_NETCDF=nc-config
-export ESMF_NETCDF_INCLUDE=/usr/local/Cellar/netcdf/4.9.2_1/include 
-export ESMF_NETCDF_LIBPATH=/usr/local/Cellar/netcdf/4.9.2_1/lib 
-export ESMF_NETCDF_LIBS='-lnetcdff -lnetcdf'
+export ESMF_COMM=openmpi
+export ESMF_PNETCDF=pnetcdf-config
+export ESMF_PNETCDF_INCLUDE=/usr/local/Cellar/pnetcdf/1.13.0/include
+export ESMF_PNETCDF_LIBPATH=/usr/local/Cellar/pnetcdf/1.13.0/lib
+export ESMF_PNETCDF_LIBS='-lpnetcdf'
+export ESMF_PIO=internal
+````
+- Install as follows:
+
+```bash
 gmake -j8 
 gmake install
 ````
 
-The key file is installed in 
-```bash
-/Users/MedinaJA/esmf-8.4.2/lib/libO/Darwin.gfortran.64.mpich.default
-````
-
-So, the key file path is:
-```bash
-/Users/MedinaJA/esmf-8.4.2/lib/libO/Darwin.gfortran.64.mpich.default/esmf.mk
-````
-
-include in config.machine
-```bash
-<environment_variables comp_interface="nuopc"> <env
-name="ESMFMKFILE">/Users/MedinaJA/esmf-8.4.2/lib/libO/Darwin.gfortran.64.mpich.default/e smf.mk</env>
-</environment_variables>
-````
-
 ## INSTALL CTSM
+
+-	Clone the CTSM repository to your home directory from the specified GitHub URL:
 ```bash
-git clone git@github.com:ESCOMP/CTSM.git --branch ctsm5.1.dev121
-cd CTSM
+git clone git@github.com:ESCOMP/CTSM.git --branch ctsm5.1.dev160 temp-folder && mv temp-folder CTSM_5_1_dev160
 ````
 
-This developer version is way ahead the last release version. I cannot run the model using the release version, I do not really knwo why, maybe there was a change between release version 35 and the current developing code?
+Note: if you see complaints about git-lfs, install:
+```bash
+brew install git-lfs
+````
 
-## GET FATES 
+## INSTALL FATES
+
+-	Move into the newly cloned CTSM directory - make sure you go to the right one.
+```bash
+cd CTSM_5_1_dev160
+````
+-	Run the script to manage external dependencies and check out required code
 ```bash
 ./manage_externals/checkout_externals
 ````
 
-## FIX MACHINES CONFIG
-Make sure that config_machines has the following line.
-Machine is homebrew, you can probably change this name later on. The best would be to have your own .cime folder in the home directory, and source control it.
+## MACHINE AND COMPILERS DEFINITION
+In your home directory, you need to have a folder called .cime. Inside this folder, there are a couple fo files that you need to modify. 
 
-```bash
-<DIN_LOC_ROOT_CLMFORC>$ENV{HOME}/projects/cesm-inputdata/atm/datm7</DIN_LOC_ ROOT_CLMFORC>
-````
+More details can be found here: https://esmci.github.io/cime/versions/master/html/users_guide/porting-cime.html
 
-Also, you need to include the following line in machine:
+I have provided my own files in the folder 'personal_cime_configuration_files'. You can download them and modify them according to your needs. 
+
+There are a couple of key points that I want to highlight.
+
+You need to include the path for the nuopc driver. In my case, I have the following path:
+
 ```bash
 <environment_variables comp_interface="nuopc"> <env
-name="ESMFMKFILE">/Users/MedinaJA/esmf-8.4.2/lib/libO/Darwin.gfortran.64.mpich.default/e smf.mk</env>
+name="ESMFMKFILE">/Users/MedinaJA/esmf-8.4.2/lib/libO/Darwin.gfortran.64.mpich.default/esmf.mk</env>
 </environment_variables>
 ````
 
-The lines below are important for when tunning global runs. They allow running multiple cores. Check what happens if you use 8 instead of 6 the max_mpitasks_per_node.
+## Additional packages
 
+There are a couple of additional packages that will make your life easy.
+
+<!---
+- NCO is needed to concatenate netcdf files. 
 ```bash
-<MAX_TASKS_PER_NODE>8</MAX_TASKS_PER_NODE> 
-<MAX_MPITASKS_PER_NODE>6</MAX_MPITASKS_PER_NODE>
+brew install nco
 ````
 
-## TO AVOID PROBLEMS
-Homebrew always upgrades the packages when there is a new version. To run FATES, packages such as mpich or netcdf where installed using gcc-13. If brew automatically upgrades
-gcc, then, packages like mpich or entcdf wont work properly. This is specially a problem when you installes the driver nuoc. So, the solution is to tell brew to avoid updating certain packages with the option brew pin.
+- Ncview is a visual browser for netCDF format files.
+```bash
+brew install ncview
+````
+-->
+
+- Panoply is a cross-platform application that plots geo-gridded and other arrays from netCDF, HDF, GRIB, and other datasets.
+```bash
+brew install --cask panoply
+````
+## TEST FATES INSTALLATION
+
+Now that we have installed all required packages, let's run a test to check if everything is working properly.
+
+Create a shell script named test_fates.sh
 
 ```bash
-brew pin hdf5
-brew pin mpich
-brew pin netcdf
-brew pin netcdf-fortran
-brew pin gcc
+
+#!/bin/bash
+
 ````
