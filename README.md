@@ -15,6 +15,7 @@ Use at your own discretion.
 
 ## Table of Contents
 - [Supported Operating Systems](#supported-operating-systems)
+- [Shell scripts to run FATES](#shellscripts)
 - [Troubleshooting](#troubleshooting)
 
 ## Supported Operating Systems
@@ -24,6 +25,9 @@ Choose the guide for your operating system:
 - [macOS Big Sur Source Installation - Intel](./os-macos-bigsur-intel.md)
 
 ~~- [Windows Installation]~~
+
+## Shell scripts to run FATES
+I included a few basic shell scripts to test the the installation of the models. These scripts are located in the `shell_scripts` directory.
 
 ## Troubleshooting
 **No personal support is provided**.
