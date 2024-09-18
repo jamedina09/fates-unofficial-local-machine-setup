@@ -1,12 +1,69 @@
 # (UNDER-DEVELOPMENT) Unofficail Guidelines for manual installation of packages required to run FATES and CLMT in MacOSX Sonoma
 
-To install the necessary components, we initially require three packages: CMake, Make (often referred to as gmake), and Wget. While CMake and Make could potentially be installed from source, it is unnecessary to do so, as they are not directly interconnected with the packages required by CTSM and FATES. The packages essential for CTSM and FATES can also be installed using Homebrew. However, a potential concern arises when utilizing Homebrew, as it has a tendency to upgrade all packages, potentially causing disruptions in dependencies. For this reason, it is imperative to install the CTSM and FATES required packages from source. This approach ensures consistent compatibility, irrespective of Homebrew's actions. Building from source affords greater control over the build process, allowing for customization of compile-time options to align with specific requirements. Such control proves to be highly valuable for optimizing performance, enabling desired features, or adapting the software to individual needs. Additionally, Wget, a command-line utility, is being installed to facilitate downloading files from the internet during the installation process.
+We initially require three packages: CMake, Make (often referred to as Gmake), and Wget. Each of these plays a specific role:
 
-## Before installing the required packages
-Before we proceed, we will create a folder called "opt" in the home directory. In this folder, we will store all downloaded packages that will be installed from source.
+- CMake: A build system generator that helps manage the build process of software projects.
+- Make: A build automation tool that automatically builds executable programs and libraries from source code.
+- Wget: A utility for downloading files from the web, useful for fetching additional resources or dependencies.
 
-●	Change directory to the user's home directory
+These packages can be installed from source, but using Homebrew simplifies this process. Homebrew is a package manager for macOS (and Linux) that automates the installation of software by managing dependencies and providing an easy-to-use interface. When you use Homebrew, it handles the installation of these packages and keeps them up to date.
 
+However, it is important to note that when Homebrew updates its packages, it can sometimes disrupt dependencies by upgrading all installed packages. This is why for specific software like CTSM and FATES, we will install the required components from source.
+
+## Homebrew
+Homebrew is a package manager for macOS that simplifies the installation of software packages and libraries. It provides a convenient way to install, update, and manage software dependencies on macOS systems. Homebrew uses a formula system to define how software packages are built and installed, making it easy to install and maintain a wide range of software tools and libraries.
+
+The link is: https://brew.sh/
+
+To install it, open terminal and type:
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+````
+It will ask for your password multiple times. Type it and press enter.
+
+### Install cmake, make, and wget
+
+```bash
+brew install make cmake wget 
+````
+
+Check the installation
+```bash
+brew list
+cmake --version
+make --version
+wget --version
+````
+
+You'll get several messages when installing the packages. One of these messages is as follows: 
+
+```bash
+GNU "make" has been installed as "gmake".
+If you need to use it as "make", you can add a "gnubin" directory
+to your PATH from your bashrc like:
+
+    PATH="/usr/local/opt/make/libexec/gnubin:$PATH"
+````
+
+To use the installed ***gmake*** instead of the default ***make***, we need to add the following line to the PATH:
+
+```bash
+echo 'export PATH=/usr/local/opt/make/libexec/gnubin:$PATH' >> ~/.zshrc
+````
+
+Then, reload the .zshrc file.
+```bash
+source ~/.zshrc
+````
+
+
+
+## Installing packages from source
+When installing software packages from source, it is essential to follow a consistent and organized approach to ensure that the build process is successful and that the software is correctly installed. Here are the general steps to install packages from source:
+
+Let's create a folder called "opt" in the home directory. In this folder, we will store all downloaded packages that will be installed from source.
+
+Change directory to the user's home directory
 ```bash
 cd ~
 ````
@@ -23,38 +80,6 @@ https://developer.apple.com/download/all/
 
 ![alt text](./images/Picture1.png "Title")
 
-## Install homebrew
-Homebrew is particularly useful for software developers, system administrators, and users who want to customize their development environment, install specific versions of software, or maintain up-to-date tools and utilities. It can be used to install programming languages, libraries, databases, system utilities, and other software components that are not provided by the operating system's package manager.
-
-To install homebrew, check https://brew.sh/
-
-## Install cmake, make, wget, and subversion
-***CMake*** simplifies the build process by generating platform-specific build scripts from a high-level configuration file.
-
-***Make*** automates the build process based on instructions defined in a Makefile, managing source files, dependencies, and build targets.
-
-***Wget*** is a tool for downloading files from the internet, often used to fetch resources needed for software development or build processes.
-
-Subversion (SVN) is a version control system used to track changes in source code and other files.
-
-●	Install the required packages via Homebrew
-
-```bash
-brew install make cmake wget 
-````
-
-subversion
-●	To use the installed ***gmake*** instead of the default ***make***, we need to add the following line to the PATH:
-
-```bash
-echo 'export PATH=/usr/local/opt/make/libexec/gnubin:$PATH' >> ~/.zshrc
-````
-
-●	Then, we need to reload the .zshrc file.
-
-```bash
-source ~/.zshrc
-````
 
 ## GCC
 
@@ -555,3 +580,9 @@ echo 'export PATH=/usr/local/nco/bin:$PATH' >> ~/.zshrc
 source ~/.zshrc
 ````
 
+
+
+
+
+
+# NOTE: Subversion (SVN) is a version control system used to track changes in source code and other files.
