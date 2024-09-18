@@ -145,9 +145,9 @@ mkdir build && cd build
 --program-suffix=-13
 ````
 
--	Build GCC using multiple CPU cores (specified by -j 8)
+-	Build GCC using multiple CPU cores (specified by -j8)
 ```bash
-make -j 8
+make -j8
 ````
 -	Install GCC and strip unnecessary symbols to reduce binary size
 ```bash
@@ -212,9 +212,9 @@ CXX=/usr/local/gcc-13/bin/g++-13 \
 FC=/usr/local/gcc-13/bin/gfortran-13 \
 FC77=/usr/local/gcc-13/bin/gfortran-13
 ````
--	Build MPICH using multiple CPU cores (specified by -j 8)
+-	Build MPICH using multiple CPU cores (specified by -j8)
 ```bash
-make -j 8
+make -j8
 ````
 -	Install MPICH
 ```bash
@@ -264,9 +264,9 @@ cd expat-2.5.0
 ```bash
 ./configure
 ````
--	Build Expat using multiple CPU cores (specified by -j 8)
+-	Build Expat using multiple CPU cores (specified by -j8)
 ```bash
-make -j 8
+make -j8
 ````
 -	Install Expat
 ```bash
@@ -300,9 +300,9 @@ cd zlib-1.3.1
 ```bash
 ./configure --prefix=/usr/local/hdf5_zlib
 ````
--	Compile the code and run the tests, making use of multiple CPU cores (-j 8).
+-	Compile the code and run the tests, making use of multiple CPU cores (-j8).
 ```bash
-sudo make -j 8 check install
+sudo make -j8 check install
 ````
 
 ## HDF5
@@ -331,9 +331,9 @@ cd hdf5-1.14.1-2
 --enable-parallel \
 CC=mpicc
 ````
--	Compile the code and run tests using multiple CPU cores (-j 8).
+-	Compile the code and run tests using multiple CPU cores (-j8).
 ```bash
-sudo make -j 8 check install
+sudo make -j8 check install
 ````
 -	Add HDF5 binaries to the PATH environment variable.
 ```bash
@@ -371,9 +371,9 @@ LDFLAGS=-L/usr/local/hdf5_zlib/lib \
 --enable-parallel-tests \
 CC=mpicc
 ````
--	Compile the code and run tests using multiple CPU cores (-j 8).
+-	Compile the code and run tests using multiple CPU cores (-j8).
 ```bash
-sudo make -j 8 check install
+sudo make -j8 check install
 ````
 -	Add NetCDF binaries to the PATH environment variable.
 ```bash
@@ -412,9 +412,9 @@ LDFLAGS=-L/usr/local/netcdf/lib \
 --enable-parallel-tests \
 FC=mpif90
 ````
--	Compile the code and run tests using multiple CPU cores (-j 8).
+-	Compile the code and run tests using multiple CPU cores (-j8).
 ```bash
-make -j 8
+make -j8
 sudo make install
 ````
 -	Check NetCDF configuration using nc-config.
@@ -564,7 +564,7 @@ cd nco-5.1.7
 ````
 -	Compile and install NCO (using 8 threads for parallel compilation)
 ```bash
-sudo make -j 8 check install
+sudo make -j8 check install
 ````
 -	Append the NCO binary path to the user's shell configuration file
 ```bash
