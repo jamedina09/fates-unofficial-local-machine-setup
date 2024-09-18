@@ -17,8 +17,8 @@ Use at your own discretion.
 
 ## Supported Operating Systems
 Choose the guide for your operating system:
-- [macOS Sonoma Installation - Intel](./os-macos-sonoma-intel.md)
-- [macOS Big Sur Installation - Intel](./os-macos-bigsur.md)
+- [macOS Sonoma Source Installation - Intel](./os-macos-sonoma-intel.md)
+- [macOS Sonoma Homebrew Installation - Intel](./os-macos-sonoma-intel-homebrew.md)
 
 ~~- [Windows Installation]~~
 
