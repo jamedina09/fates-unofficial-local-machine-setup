@@ -6,7 +6,7 @@ Miniconda also comes with conda. Conda is a package manager that will help you i
 If you do not want to use Miniconda, you can install Python from the official Python website.
 However, using Miniconda is easy because is nice to create environments and manage packages.
 
-### Installing Anaconda
+### Installing Miniconda
 
 Go to:
 https://docs.anaconda.com/miniconda/
