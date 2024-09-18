@@ -1,21 +1,20 @@
-## Anadonda Python Configuration on MacOS Sonoma
+## Miniconda-Python Configuration on MacOS Sonoma
 
-Anaconda will install Python and several other packages. Everything will be bundle together.
-Anaconda also comes with conda. Conda is a package manager that will help you install packages that are not included in Anaconda.
-Along with conda, and Anaconda packages, it comes with other tools such as Jupyter notebooks, Jupyter lab, and Spyder.
+Miniconda will install Python and a couple of other packages. Everything will be bundle together.
+Miniconda also comes with conda. Conda is a package manager that will help you install packages that are not included by default.
 
-If you do not want to use Anaconda, you can install Python from the official Python website.
-However, using Anaconda is recommended because is nice to create environments and manage packages.
+If you do not want to use Miniconda, you can install Python from the official Python website.
+However, using Miniconda is easy because is nice to create environments and manage packages.
 
 ### Installing Anaconda
 
 Go to:
-https://www.anaconda.com/download
+https://docs.anaconda.com/miniconda/
 
-Insert your email and you'll get a link to download Anaconda.
+Download the installer for MacOS, click it, and follow the instructions.
 
 ### Use Python
-You will have a base python version. My version is Python 3.12.4. You can check your version by typing in the terminal:
+Miniconda install a python version. The installed version in my system is Python 3.12.4. You can check your version by typing in the terminal:
 ```bash
 python --version
 ```
@@ -32,6 +31,13 @@ conda create --name test_env python=3.7
 ```bash
 conda activate test_env
 ```
+
+### Check the version of Python
+
+```bash
+python --version
+```
+It should be the same version that you installed in the environment.
 
 ### Check installed packages
     
@@ -51,12 +57,6 @@ conda install numpy
 conda list
 ```
 
-### Check the version of Python
-
-```bash
-python --version
-```
-
 ### Deactivate the environment
 
 ```bash
@@ -65,9 +65,15 @@ conda deactivate
 
 ### Delete the environment
 
+This environment was created for testing purposes. You can delete it by typing in the terminal:
+
 ```bash
 conda remove --name test_env --all
 ```
 
 
+### Check available environments
 
+```bash
+conda env list
+```
