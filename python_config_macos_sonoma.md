@@ -77,3 +77,23 @@ conda remove --name test_env --all
 ```bash
 conda env list
 ```
+
+### Tell conda to not activate the base environment every time you open a terminal
+
+When you open a terminal, conda will activate the base environment by default. You can tell conda to not activate the base environment by typing in the terminal:
+
+```bash
+conda config --set auto_activate_base false
+```
+
+If you want to activate the base environment, you can type in the terminal:
+
+```bash
+conda activate
+```
+
+If you want any other environment (e.g., test_env; created above), you can type in the terminal:
+
+```bash
+conda activate test_env
+```
