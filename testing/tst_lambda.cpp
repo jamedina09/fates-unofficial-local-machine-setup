@@ -20,5 +20,5 @@ int main()
 
     return 0;
 }
-// g++-13 tst_lambda.cpp -o tst_lambda
+// g++-14 tst_lambda.cpp -o tst_lambda
 // ./tst_lambda

@@ -19,5 +19,5 @@ int main()
 
     return 0;
 }
-// g++-13 tst_threads.cpp -o tst_threads
+// g++-14 tst_threads.cpp -o tst_threads
 // ./tst_threads
