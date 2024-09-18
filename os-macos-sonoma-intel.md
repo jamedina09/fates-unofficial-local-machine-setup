@@ -1,4 +1,4 @@
-# (UNDER-DEVELOPMENT) Unofficail Guidelines for manual installation of packages required to run FATES and CLMT in MacOSX Sonoma
+# Unofficail Guidelines for manual installation of packages required to run FATES and CLMT in MacOSX Sonoma
 
 We initially require three packages: CMake, Make (often referred to as Gmake), and Wget. Each of these plays a specific role:
 
@@ -68,13 +68,13 @@ Change directory to the user's home directory
 cd ~
 ````
 
-●	Create a new directory called 'opt'
+-	Create a new directory called 'opt'
 ```bash
 mkdir opt
 ````
 
 ## Command Line Tools
-NOTE: Sonoma provides new command line tools (version 15.3 as of May 2024) that cause various issues. This new version of the command line tools does not allow compiling GCC and other packages from source. Therefore, I am installing the beta version 15, which is the immediate release after command line tools for Xcode 14.3.1, which runs perfectly. I cannot install version 14.3.1 because Sonoma does not support it. The version 15 Beta allows the compilation of packages. You need to download the beta 15 version. A screenshot of the software is below. Download the file to ~/opt. There is a compressed folder with Xcode 15 beta in ~.
+Sonoma provides new command line tools (version 15.3 as of May 2024) that cause various issues. This new version of the command line tools does not allow compiling GCC and other packages from source. Therefore, I am installing the beta version 15, which is the immediate release after command line tools for Xcode 14.3.1, which runs perfectly. I cannot install version 14.3.1 because Sonoma does not support it. The version 15 Beta allows the compilation of packages. You need to download the beta 15 version. A screenshot of the software is below. Download the file to ~/opt and install manually.
 
 https://developer.apple.com/download/all/
 
@@ -99,36 +99,36 @@ While Clang is the default compiler provided by Apple and is widely used, some d
 
 **Community and Documentation:** For some developers, the available documentation, tutorials, and community support for GCC might be more familiar or suitable for their needs.
 
-●	Navigate into the newly created 'opt' directory
+-	Navigate into the newly created 'opt' directory
 ```bash
 cd ~/opt
 ````
-●	Create a new directory called 'gcc' and navigate into it
+-	Create a new directory called 'gcc' and navigate into it
 ```bash
 mkdir gcc
 cd gcc
 ````
-●	Download the GCC (GNU Compiler Collection) version 13.2.0 source code archive
+-	Download the GCC (GNU Compiler Collection) version 13.2.0 source code archive
 ```bash
 wget https://mirrors.kernel.org/gnu/gcc/gcc-13.2.0/gcc-13.2.0.tar.xz
 ````
-●	Extract the downloaded source code archive
+-	Extract the downloaded source code archive
 ```bash
 tar -zxvf gcc-13.2.0.tar.xz
 ````
-●	Navigate into the extracted GCC source code directory
+-	Navigate into the extracted GCC source code directory
 ```bash
 cd gcc-13.2.0
 ````
-●	Download additional prerequisites required for building GCC
+-	Download additional prerequisites required for building GCC
 ```bash
 contrib/download_prerequisites
 ````
-●	Create a new directory called 'build' and navigate into it
+-	Create a new directory called 'build' and navigate into it
 ```bash
 mkdir build && cd build
 ````
-●	Configure the GCC build with specified options:
+-	Configure the GCC build with specified options:
 - Install GCC in /usr/local/gcc-13 directory
 - Enable release-level checking
 - Enable compilation of C, C++, and Fortran languages
@@ -145,23 +145,23 @@ mkdir build && cd build
 --program-suffix=-13
 ````
 
-●	Build GCC using multiple CPU cores (specified by -j 8)
+-	Build GCC using multiple CPU cores (specified by -j 8)
 ```bash
 make -j 8
 ````
-●	Install GCC and strip unnecessary symbols to reduce binary size
+-	Install GCC and strip unnecessary symbols to reduce binary size
 ```bash
 sudo make install-strip
 ````
-●	Append the GCC bin directory to the user's shell PATH in the .zshrc file
+-	Append the GCC bin directory to the user's shell PATH in the .zshrc file
 ```bash
 echo 'export PATH=/usr/local/gcc-13/bin:$PATH' >> ~/.zshrc
 ````
-●	Reload the updated .zshrc file to apply the new PATH configuration
+-	Reload the updated .zshrc file to apply the new PATH configuration
 ```bash
 source ~/.zshrc
 ````
-●	Create symbolic links to the GCC executables with simplified names as ln -s /path/to/original /path/to/link
+-	Create symbolic links to the GCC executables with simplified names as ln -s /path/to/original /path/to/link
 ```bash
 ln -s /usr/local/gcc-13/bin/gcc-13 /usr/local/bin/gcc
 ln -s /usr/local/gcc-13/bin/g++-13 /usr/local/bin/g++
@@ -178,31 +178,31 @@ curl -L -O https://www.mpich.org/static/downloads/4.1.2/mpich-4.1.2.tar.gz
 
 Note: When I’m working with the wifi off, mpich does not really work on my computer. It is a weird behaviour and I do not the reason.
 
-●	Change directory to the user's 'opt' directory
+-	Change directory to the user's 'opt' directory
 ```bash
 cd ~/opt
 ````
-●	Create a new directory called 'mpich'
+-	Create a new directory called 'mpich'
 ```bash
 mkdir mpich
 ````
-●	Navigate into the newly created 'mpich' directory
+-	Navigate into the newly created 'mpich' directory
 ```bash
 cd mpich
 ````
-●	Download the MPICH version 4.1.2 source code archive using curl
+-	Download the MPICH version 4.1.2 source code archive using curl
 ```bash
 wget https://www.mpich.org/static/downloads/4.1.2/mpich-4.1.2.tar.gz
 ````
-●	Extract the downloaded MPICH source code archive
+-	Extract the downloaded MPICH source code archive
 ```bash
 tar -zxvf mpich-4.1.2.tar.gz
 ````
-●	Navigate into the extracted MPICH source code directory
+-	Navigate into the extracted MPICH source code directory
 ```bash
 cd mpich-4.1.2
 ````
-●	Configure the MPICH build with specified options:
+-	Configure the MPICH build with specified options:
 -	Install MPICH in /usr/local/mpich-4.1.2 directory
 -	Use specific GCC compiler versions for C, C++, and Fortran
 ```bash
@@ -212,63 +212,63 @@ CXX=/usr/local/gcc-13/bin/g++-13 \
 FC=/usr/local/gcc-13/bin/gfortran-13 \
 FC77=/usr/local/gcc-13/bin/gfortran-13
 ````
-●	Build MPICH using multiple CPU cores (specified by -j 8)
+-	Build MPICH using multiple CPU cores (specified by -j 8)
 ```bash
 make -j 8
 ````
-●	Install MPICH
+-	Install MPICH
 ```bash
 sudo make install
 ````
-●	Append the MPICH bin directory to the user's shell PATH in the .zshrc file
+-	Append the MPICH bin directory to the user's shell PATH in the .zshrc file
 ```bash
 echo 'export PATH=/usr/local/mpich/bin:$PATH' >> ~/.zshrc
 ````
-●	Reload the updated .zshrc file to apply the new PATH configuration
+-	Reload the updated .zshrc file to apply the new PATH configuration
 ```bash
 source ~/.zshrc
 ````
 
 ## TESTS
 
-Here we need to verify whether the installations of GCC and MPICH were successful. Several files are located in the folder "testing". I did not author these testing files; I'll provide the links when I remember where I got them from. These files will help us determine the success of the installations. If the exercises fail, it indicates an incorrect installation, requiring us to repeat the process. To execute the files, open each script and run the last two lines that are commented.
+Here we need to verify whether the installations of GCC and MPICH were successful. Several files are located in the folder "testing". I did not author these testing files; I'll provide the links when I remember where I got them from. These files will help us determine the success of the installations. If the exercises fail, it indicates an incorrect installation, requiring us to repeat the process. Execute these files. If you do not know how to do it, open each file and check the last two commented lines.
 
 ## EXPAT
 Expat is an XML parsing library that provides a set of functions and tools for reading, interpreting, and manipulating XML (eXtensible Markup Language) documents. XML is a widely used markup language for structuring and representing data in a human-readable and machine-readable format. Expat allows software applications to efficiently parse and process XML data, making it an essential component for various programming tasks involving XML.
 
-●	Change directory to the user's 'opt' directory
+-	Change directory to the user's 'opt' directory
 ```bash
 cd ~/opt
 ````
-●	Create a new directory called 'expat'
+-	Create a new directory called 'expat'
 ```bash
 mkdir expat
 ````
-●	Navigate into the newly created 'expat' directory
+-	Navigate into the newly created 'expat' directory
 ```bash
 cd expat
 ````
-●	Download the Expat version 2.5.0 source code archive using wget
+-	Download the Expat version 2.5.0 source code archive using wget
 ```bash
 wget https://github.com/libexpat/libexpat/releases/download/R_2_5_0/expat-2.5.0.tar.bz2
 ````
-●	Extract the downloaded Expat source code archive
+-	Extract the downloaded Expat source code archive
 ```bash
 tar -zxvf expat-2.5.0.tar.bz2
 ````
-●	Navigate into the extracted Expat source code directory
+-	Navigate into the extracted Expat source code directory
 ```bash
 cd expat-2.5.0
 ````
-●	Configure the Expat build using default options
+-	Configure the Expat build using default options
 ```bash
 ./configure
 ````
-●	Build Expat using multiple CPU cores (specified by -j 8)
+-	Build Expat using multiple CPU cores (specified by -j 8)
 ```bash
 make -j 8
 ````
-●	Install Expat
+-	Install Expat
 ```bash
 sudo make install
 ````
@@ -281,26 +281,26 @@ Installing libraries like zlib before installing HDF5 (Hierarchical Data Format)
 Check latest version here:
 https://www.zlib.net/
 
-●	Navigate to the home directory and create a folder named "zlib" to work in.
+-	Navigate to the home directory and create a folder named "zlib" to work in.
 ```bash
 cd ~/opt
 mkdir zlib
 cd zlib
 ````
-●	Download the ZLIB source code archive from the specified URL.
+-	Download the ZLIB source code archive from the specified URL.
 ```bash
 wget http://www.zlib.net/zlib-1.3.1.tar.gz
 ````
-●	Extract and navigate to the downloaded archive.
+-	Extract and navigate to the downloaded archive.
 ```bash
 tar -zxvf zlib-1.3.1.tar.gz
 cd zlib-1.3.1
 ````
-●	Configure the build process, specifying the installation prefix. This sets the destination directory for the installed files.
+-	Configure the build process, specifying the installation prefix. This sets the destination directory for the installed files.
 ```bash
 ./configure --prefix=/usr/local/hdf5_zlib
 ````
-●	Compile the code and run the tests, making use of multiple CPU cores (-j 8).
+-	Compile the code and run the tests, making use of multiple CPU cores (-j 8).
 ```bash
 sudo make -j 8 check install
 ````
@@ -308,22 +308,22 @@ sudo make -j 8 check install
 ## HDF5
 HDF5 (Hierarchical Data Format version 5) is a versatile and flexible file format and library designed for managing and storing large and complex datasets. It is widely used in scientific computing, data analysis, and research environments to handle structured and unstructured data, as well as metadata. HDF5 provides features for data organization, compression, parallel I/O, and portability across different platforms and programming languages. It is especially popular in fields such as astronomy, climate modeling, and other scientific domains where efficient data storage, access, and sharing are essential.
 
-●	Navigate to the home directory and create a folder named "hdf5" to work in.
+-	Navigate to the home directory and create a folder named "hdf5" to work in.
 ```bash
 cd ~/opt
 mkdir hdf5
 cd hdf5
 ````
-●	Download the HDF5 source code archive from the specified URL.
+-	Download the HDF5 source code archive from the specified URL.
 ```bash
 wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.14/hdf5-1.14.1/src/hdf5-1.14.1-2.tar.gz
 ````
-●	Extract and navigate to the downloaded archive.
+-	Extract and navigate to the downloaded archive.
 ```bash
 tar -zxvf hdf5-1.14.1-2.tar.gz
 cd hdf5-1.14.1-2
 ````
-●	Configure the build process, specifying the zlib installation directory and installation prefix. Enabling Fortran and parallel features, and using the mpicc compiler for parallel support.
+-	Configure the build process, specifying the zlib installation directory and installation prefix. Enabling Fortran and parallel features, and using the mpicc compiler for parallel support.
 ```bash
 ./configure --with-zlib=/usr/local/hdf5_zlib \
 --prefix=/usr/local/hdf5_zlib \
@@ -331,11 +331,11 @@ cd hdf5-1.14.1-2
 --enable-parallel \
 CC=mpicc
 ````
-●	Compile the code and run tests using multiple CPU cores (-j 8).
+-	Compile the code and run tests using multiple CPU cores (-j 8).
 ```bash
 sudo make -j 8 check install
 ````
-●	Add HDF5 binaries to the PATH environment variable.
+-	Add HDF5 binaries to the PATH environment variable.
 ```bash
 echo 'export PATH=/usr/local/hdf5_zlib/bin:$PATH' >> ~/.zshrc
 source ~/.zshrc
@@ -344,25 +344,25 @@ source ~/.zshrc
 ### NETCDF-C
 NetCDF (Network Common Data Form) is a set of software libraries and data formats designed for storing, accessing, and sharing scientific data. It provides a standardized way to represent and organize various types of data, making it particularly well-suited for applications in the fields of atmospheric, oceanic, and climate sciences, as well as other scientific domains.
 
-●	Navigate to the home directory and create a folder named "netcdf-c" to work in.
+-	Navigate to the home directory and create a folder named "netcdf-c" to work in.
 ```bash
 cd ~/opt
 mkdir netcdf-c
 cd netcdf-c
 ````
-●	Download the NetCDF-C source code archive from the provided URL.
+-	Download the NetCDF-C source code archive from the provided URL.
 ```bash
 wget https://downloads.unidata.ucar.edu/netcdf-c/4.9.2/netcdf-c-4.9.2.tar.gz
 ````
-●	Extract the downloaded archive.
+-	Extract the downloaded archive.
 ```bash
 tar -zxvf netcdf-c-4.9.2.tar.gz
 ````
-●	Move into the extracted directory.
+-	Move into the extracted directory.
 ```bash
 cd netcdf-c-4.9.2
 ````
-●	Set compiler and linker flags for HDF5 and zlib libraries. Configure the build process, specifying installation prefix and enabling parallel tests.
+-	Set compiler and linker flags for HDF5 and zlib libraries. Configure the build process, specifying installation prefix and enabling parallel tests.
 ```bash
 ./configure \
 CPPFLAGS=-I/usr/local/hdf5_zlib/include \
@@ -371,16 +371,16 @@ LDFLAGS=-L/usr/local/hdf5_zlib/lib \
 --enable-parallel-tests \
 CC=mpicc
 ````
-●	Compile the code and run tests using multiple CPU cores (-j 8).
+-	Compile the code and run tests using multiple CPU cores (-j 8).
 ```bash
 sudo make -j 8 check install
 ````
-●	Add NetCDF binaries to the PATH environment variable.
+-	Add NetCDF binaries to the PATH environment variable.
 ```bash
 echo 'export PATH=/usr/local/netcdf/bin:$PATH' >> ~/.zshrc
 source ~/.zshrc
 ````
-●	Check NetCDF configuration using nc-config.
+-	Check NetCDF configuration using nc-config.
 ```bash
 nc-config --all
 ````
@@ -388,22 +388,22 @@ nc-config --all
 ## NETCDF-FORTRAN
 NetCDF-Fortran is a component of the NetCDF software suite that provides Fortran language bindings for working with NetCDF data files. Fortran is a programming language commonly used in scientific and engineering applications, and NetCDF-Fortran allows Fortran programs to read from and write to NetCDF files seamlessly. It extends the capabilities of the core NetCDF library by enabling Fortran-specific data manipulation and access.
 
-●	Navigate to the home directory and create a folder named "netcdf-fortran" to work in.
+-	Navigate to the home directory and create a folder named "netcdf-fortran" to work in.
 ```bash
 cd ~/opt
 mkdir netcdf-fortran
 cd netcdf-fortran
 ````
-●	Download the NetCDF-Fortran source code archive from the provided URL.
+-	Download the NetCDF-Fortran source code archive from the provided URL.
 ```bash
 wget https://downloads.unidata.ucar.edu/netcdf-fortran/4.6.1/netcdf-fortran-4.6.1.tar.gz
 ````
-●	Extract the downloaded archive.
+-	Extract the downloaded archive.
 ```bash
 tar -zxvf netcdf-fortran-4.6.1.tar.gz
 cd netcdf-fortran-4.6.1
 ````
-●	Set the Fortran compiler, compiler flags, and linker flags for NetCDF library. Configure the build process, specifying installation prefix and enabling parallel tests.
+-	Set the Fortran compiler, compiler flags, and linker flags for NetCDF library. Configure the build process, specifying installation prefix and enabling parallel tests.
 ```bash
 ./configure \
 CPPFLAGS=-I/usr/local/netcdf/include \
@@ -412,12 +412,12 @@ LDFLAGS=-L/usr/local/netcdf/lib \
 --enable-parallel-tests \
 FC=mpif90
 ````
-●	Compile the code and run tests using multiple CPU cores (-j 8).
+-	Compile the code and run tests using multiple CPU cores (-j 8).
 ```bash
 make -j 8
 sudo make install
 ````
-●	Check NetCDF configuration using nc-config.
+-	Check NetCDF configuration using nc-config.
 ```bash
 make check
 nf-config –all
@@ -426,25 +426,25 @@ nf-config –all
 ## ESMF
 ESMF stands for Earth System Modeling Framework. It is an open-source software framework developed for building and coupling complex Earth system models. ESMF provides a set of tools and libraries that facilitate the development, execution, and coupling of models that simulate different components of the Earth system, such as the atmosphere, ocean, land surface, and more. It is widely used in climate and weather research, as well as other Earth science disciplines.
 
-●	Create a folder named "esmf" in the home directory
+-	Create a folder named "esmf" in the home directory
 ```bash
 cd ~/
 mkdir esmf
 cd esmf
 ````
-●	Download the latest version of ESMF (v8.6.1) from GitHub
+-	Download the latest version of ESMF (v8.6.1) from GitHub
 ```bash
 wget https://github.com/esmf-org/esmf/archive/refs/tags/v8.6.1.tar.gz
 ````
-●	Extract the downloaded tarball
+-	Extract the downloaded tarball
 ```bash
 tar -zxvf v8.6.1.tar.gz
 ````
-●	Navigate to the extracted ESMF directory
+-	Navigate to the extracted ESMF directory
 ```bash
 cd esmf-8.6.1 
 ````
-●	Set environment variables required for ESMF configuration
+-	Set environment variables required for ESMF configuration
 ```bash
 export ESMF_DIR=/Users/MedinaJA/esmf/esmf-8.6.1
 export ESMF_COMPILER=gfortran
@@ -454,25 +454,25 @@ export ESMF_NETCDF_INCLUDE=/usr/local/netcdf/include
 export ESMF_NETCDF_LIBPATH=/usr/local/netcdf/lib
 export ESMF_NETCDF_LIBS='-lnetcdff -lnetcdf'
 ````
-●	Compile ESMF using the "make" command with parallel processing (-j8 for 8 parallel jobs)
+-	Compile ESMF using the "make" command with parallel processing (-j8 for 8 parallel jobs)
 ```bash
 gmake -j8
 ````
-●	Install ESMF
+-	Install ESMF
 ```bash
 gmake install
 ````
 
 Notes: 
-●	The key file is installed in:
+-	The key file is installed in:
 ```bash
 /Users/XXX/esmf/esmf-8.6.1/lib/libO/Darwin.gfortran.64.mpich.default
 ````
-●	The key file path is:
+-	The key file path is:
 ```bash
 /Users/XXX/esmf/esmf-8.6.1/lib/libO/Darwin.gfortran.64.mpich.default/esmf.mk
 ````
-●	The environmental variable for the config.machine is:
+-	The environmental variable for the config.machine is:
 
 ```bash
    <environment_variables comp_interface="nuopc">
@@ -480,86 +480,81 @@ Notes:
     </environment_variables>
 ````
 
-## PORT CIME
-## comment in markdown
+Note that XXX is your username.
 
-I have a ./cime directory with configuration files on my GitHub. Those files need to be located in the home directory of my computer.
+## PORT CIME
+
+I have my own version of the "./cime" files in the directory 'personal_cime_configuration_files'. Create a .cime dirctory in your home directory and add those files. Edit as needed.
 
 ## INSTALL CTSM AND FATES
-It is smart to have multiple CTSM versions. So you can go back to previous files and stuff. You clone the repositories and then change the names
-●	Clone the CTSM repository from the specified GitHub URL
+
+-	Clone the CTSM repository to your home directory from the specified GitHub URL:
 ```bash
 git clone git@github.com:ESCOMP/CTSM.git --branch ctsm5.1.dev160 temp-folder && mv temp-folder CTSM_5_1_dev160
 ````
-Note: it may complaining about git-lfs. If so, install:
+Note: if you see comments about git-lfs, install:
 ```bash
 brew install git-lfs
 ````
 
-●	Move into the newly cloned CTSM directory - make sure you go to the right one.
+-	Move into the newly cloned CTSM directory - make sure you go to the right one.
 ```bash
 cd CTSM_5_1_dev160
 ````
-●	Run the script to manage external dependencies and check out required code
+-	Run the script to manage external dependencies and check out required code
 ```bash
 ./manage_externals/checkout_externals
 ````
-FIX MACHINES CONFIG - This is for CIME PORTING
-The following key changes should be done in the config_machines.xml file.
+# SUCCESS, CTSM and FATES are installed.
 
-●	FORCING DATA PATH
-```bash
-<DIN_LOC_ROOT_CLMFORC>$ENV{HOME}/projects/cesm-inputdata/atm/datm7</DIN_LOC_ROOT_CLMFORC>
-````
-●	NETCDF PATH
-```bash
-<environment_variables>
-   <env name="NETCDF_PATH">/usr/local/netcdf</env>
-</environment_variables>
-````
-●	ESMF FILE PATH
-```bash
-   <environment_variables comp_interface="nuopc">
-      <env name="ESMFMKFILE">/Users/MedinaJA/esmf/esmf-8.6.1/lib/libO/Darwin.gfortran.64.mpich.default/esmf.mk</env>
-    </environment_variables>
-````
 
-RUNNING .SH FILES
+______________________________________________________________________________________________________________
+______________________________________________________________________________________________________________
+______________________________________________________________________________________________________________
+
+## EXTRA INFORMATION
+### RUNNING .SH FILES
 Sometimes you may not be able to run .sh files due to lack of permissions. In such cases, you need to execute the following command first to grant permission to the file, and then you can run it:
 ```bash
 chmod +x ./name.sh
 ````
 
-POST PROCESSING PACKAGES:
-UDUNITS (nco dependency)
+### POST PROCESSING PACKAGES:
+- UDUNITS (nco dependency)
 UDUNITS is a software package that provides support for units of physical quantities and their conversion. It is used in scientific computing and data analysis to handle unit conversions, ensure consistency in calculations involving different units, and facilitate the interpretation of physical data. UDUNITS allows you to work with quantities expressed in various units (e.g., meters, seconds, kilograms) and perform conversions between them seamlessly.
 
+```bash
 brew install udunits
-TEXINFO (nco dependency)
+````
+
+- TEXINFO (nco dependency)
 Texinfo is a documentation system and file format designed for creating and formatting documentation and help files. It was initially developed by Richard Stallman and is commonly used in the GNU project and related software projects. Texinfo allows you to write documentation in a simple and structured manner using plain text files. These files can then be processed to generate various output formats, such as printed manuals, online help systems, and HTML pages.
+```bash
 brew install texinfo
-NCO
+````
+
+- NCO
 NCO (NetCDF Operators) is a suite of command-line tools and libraries that allow users to manipulate and analyze data stored in the NetCDF (Network Common Data Form) format. NetCDF is a popular file format for storing scientific data, especially multidimensional data, in a self-describing and platform-independent manner.
 
-●	Navigate to the user's home directory and create a new directory named "nco"
+-	Navigate to the user's home directory and create a new directory named "nco"
 ```bash
 cd ~/opt
 mkdir nco
 cd nco
 ````
-●	Download the NCO source code archive from GitHub
+-	Download the NCO source code archive from GitHub
 ```bash
 wget https://github.com/nco/nco/archive/5.1.7.tar.gz
 ````
-●	Extract the downloaded archive
+-	Extract the downloaded archive
 ```bash
 tar xvzf 5.1.7.tar.gz
 ````
-●	Navigate into the extracted directory
+-	Navigate into the extracted directory
 ```bash
 cd nco-5.1.7
 ````
-●	Configure the installation settings for NCO
+-	Configure the installation settings for NCO
 ```bash
 ./configure --prefix=/usr/local/nco \
   NETCDF_INC=/usr/local/netcdf/include \
@@ -567,22 +562,15 @@ cd nco-5.1.7
   CPPFLAGS=-I/usr/local/include \
   LDFLAGS=-L/usr/local/lib 
 ````
-●	Compile and install NCO (using 8 threads for parallel compilation)
+-	Compile and install NCO (using 8 threads for parallel compilation)
 ```bash
 sudo make -j 8 check install
 ````
-●	Append the NCO binary path to the user's shell configuration file
+-	Append the NCO binary path to the user's shell configuration file
 ```bash
 echo 'export PATH=/usr/local/nco/bin:$PATH' >> ~/.zshrc
 ````
-●	Reload the shell configuration to apply the changes
+-	Reload the shell configuration to apply the changes
 ```bash
 source ~/.zshrc
 ````
-
-
-
-
-
-
-# NOTE: Subversion (SVN) is a version control system used to track changes in source code and other files.
