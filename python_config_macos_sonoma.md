@@ -51,7 +51,9 @@ conda list
 conda install numpy
 ```
 
-### Check the installed packages
+### Check the installed packages again
+
+The new package should be listed.
 
 ```bash
 conda list
