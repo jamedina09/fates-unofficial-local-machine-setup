@@ -1,6 +1,6 @@
-## Port CTSM Using Homebrew and Source Packages on MacOS Sonoma
+# Unofficail Guidelines for Manual Installation of Packages Required to run FATES and CLMT Using Homebrew and Source Packages on MacOS Sonoma
 
-I am using a combination between Homebrew and source installation packages because of simplicity. With Sonoma, Apple have provided an updated Xcode version 15.0 (and Command Line Tools) which does not allow to install GCC from source; or I have not found a way to do it. With previos versions of MacOS, I was able to install GCC and the other packages from source. If you want a go at it, you can try to install GCC from source, and details are explained in [macOS Sonoma Source Installation - Intel](./os-macos-sonoma-intel.md). For simplicity, I will use Homebrew to install GCC, and then use that installation to install the other packages from source. 
+I am using a combination between Homebrew and source installation packages because of simplicity. With Sonoma, Apple have provided an updated Xcode version 15.0 (and Command Line Tools) which does not allow to install GCC from source; or I have not found a way to do it. With previos versions of MacOS, I was able to install GCC and the other packages from source. If you want a go at it, you can try to install GCC from source, and details are explained in [macOS Sonoma Source Installation - Intel](./os-macos-sonoma-intel.md). For simplicity, I will use Homebrew to install GCC, and then use that installation to install the other packages from source.
 
 ## Homebrew
 
@@ -536,7 +536,6 @@ cd esmf-8.6.1
 
 - Export environmental variables:
 
-
 ```bash
 export ESMF_DIR=/Users/MedinaJA/opt/esmf/esmf-8.6.1
 export ESMF_COMPILER=gfortran
@@ -554,11 +553,19 @@ make -j8
 make -j8 check
 ````
 
-## INSTALL CTSM
+## Install svn using brew
+
+This is needed so the model downloads missing datasets
+
+```bash
+brew install subversion
+````
+
+## Install CTSM
 
 Define which version of CTSM and FATES you need. Check it here:
 
-https://fates-users-guide.readthedocs.io/en/latest/user/Table-of-FATES-API-and-HLM-STATUS.html
+<https://fates-users-guide.readthedocs.io/en/latest/user/Table-of-FATES-API-and-HLM-STATUS.html>
 
 - Clone the CTSM repository to your home directory from the specified GitHub URL:
 
@@ -573,7 +580,7 @@ Note: if you see complaints about git-lfs, install:
 brew install git-lfs
 ````
 
-## INSTALL FATES
+## Install FATES
 
 - Move into the newly cloned CTSM directory - make sure you go to the right one.
 
@@ -587,39 +594,100 @@ cd CTSM_5_1_dev160
 ./manage_externals/checkout_externals
 ````
 
-## MACHINE AND COMPILERS DEFINITION
+## Define machines and compilers in .cime
 
-In your home directory, you need to have a folder called .cime. Inside this folder, there are a couple fo files that you need to modify.
+In your home directory, you need to have a folder called .cime. Inside this folder, there are a couple fo files that you need to modify. More details can be found here:
 
-More details can be found here: <https://esmci.github.io/cime/versions/master/html/users_guide/porting-cime.html>
+<https://esmci.github.io/cime/versions/master/html/users_guide/porting-cime.html>
 
 I have provided my own files in the folder 'personal_cime_configuration_files'. You can download them and modify them according to your needs.
 
-There are a couple of key points that I want to highlight.
+There are a couple of key points that I need to highlight.
 
 You need to include the path for the nuopc driver. In my case, I have the following path:
 
 ```bash
 <environment_variables comp_interface="nuopc"> <env
-name="ESMFMKFILE">/Users/MedinaJA/esmf-8.4.2/lib/libO/Darwin.gfortran.64.mpich.default/esmf.mk</env>
+name="ESMFMKFILE">/Users/MedinaJA/opt/esmf/esmf-8.6.1/lib/libO/Darwin.gfortran.64.mpich.default/esmf.mk</env>
 </environment_variables>
 ````
 
 ## Additional packages
 
-There are a couple of additional packages that will make your life easy.
+There are a couple of additional packages that will make your life easier.
 
-<!---
-- NCO is needed to concatenate netcdf files. 
+- UDUNITS (nco dependency)
+UDUNITS is a software package that provides support for units of physical quantities and their conversion. It is used in scientific computing and data analysis to handle unit conversions, ensure consistency in calculations involving different units, and facilitate the interpretation of physical data. UDUNITS allows you to work with quantities expressed in various units (e.g., meters, seconds, kilograms) and perform conversions between them seamlessly.
+
 ```bash
-brew install nco
+brew install udunits
 ````
 
-- Ncview is a visual browser for netCDF format files.
+- TEXINFO (nco dependency)
+Texinfo is a documentation system and file format designed for creating and formatting documentation and help files. It was initially developed by Richard Stallman and is commonly used in the GNU project and related software projects. Texinfo allows you to write documentation in a simple and structured manner using plain text files. These files can then be processed to generate various output formats, such as printed manuals, online help systems, and HTML pages.
+
 ```bash
-brew install ncview
+brew install texinfo
 ````
--->
+
+- NCO
+NCO (NetCDF Operators) is a suite of command-line tools and libraries that allow users to manipulate and analyze data stored in the NetCDF (Network Common Data Form) format. NetCDF is a popular file format for storing scientific data, especially multidimensional data, in a self-describing and platform-independent manner.
+
+- Navigate to the user's home directory and create a new directory named "nco"
+
+```bash
+cd ~/opt
+mkdir nco
+cd nco
+````
+
+- Download the NCO source code archive from GitHub
+
+```bash
+wget https://github.com/nco/nco/archive/5.1.7.tar.gz
+````
+
+- Extract the downloaded archive
+
+```bash
+tar xvzf 5.1.7.tar.gz
+````
+
+- Navigate into the extracted directory
+
+```bash
+cd nco-5.1.7
+````
+
+- Configure the installation settings for NCO
+
+```bash
+./configure --prefix=/usr/local/nco \
+  NETCDF_ROOT=/usr/local/netcdf \
+  CPPFLAGS=-I/usr/local/include \
+  LDFLAGS=-L/usr/local/lib \
+  CC=/usr/local/bin/gcc-14 \
+  CXX=/usr/local/bin/g++-14
+````
+
+- Compile and install NCO (using 8 threads for parallel compilation)
+
+```bash
+sudo make -j8 install
+sudo make -j8 check
+````
+
+- Append the NCO binary path to the user's shell configuration file
+
+```bash
+echo 'export PATH=/usr/local/nco/bin:$PATH' >> ~/.zshrc
+````
+
+- Reload the shell configuration to apply the changes
+
+```bash
+source ~/.zshrc
+````
 
 - Panoply is a cross-platform application that plots geo-gridded and other arrays from netCDF, HDF, GRIB, and other datasets.
 
@@ -631,99 +699,98 @@ brew install --cask panoply
 
 Now that we have installed all required packages, let's run a test to check if everything is working properly.
 
-Create a shell script named test_fates.sh
+- Create a shell script named ctsm_fates_test.sh and copy the following code into it:
 
 ```bash
 
 #!/bin/bash
 
-export CIME_MODEL=cesm
-export MACH=SI
-export COMP=2000_DATM%QIA_ELM%BGC-FATES_SICE_SOCN_SROF_SGLC_SWAV
+# Set up base directories
+HOME_DIR="$HOME"
+PROJECTS_DIR="$HOME_DIR/projects"
+CTSM_VERSION="CTSM_5_1_dev160"
+SCRATCH_DIR="$PROJECTS_DIR/scratch"
+CTSM_DIR="$HOME_DIR/$CTSM_VERSION"
+CIME_DIR="$CTSM_DIR/cime/scripts"
+CASE_NAME="CTSM_FATES_TEST"
+CASE_DIR="$SCRATCH_DIR/$CASE_NAME"
+ARCHIVE_DIR="$SCRATCH_DIR/archive/$CASE_NAME"
+CESM_INPUT_DIR="$PROJECTS_DIR/inputdata"
 
-export SOURCE_DIR=/Users/MedinaJA/E3SM/cime/scripts # change to the path where your CTSM/cime/sripts is
+CLMFORC_DIR="$CESM_INPUT_DIR/atm/datm7" # Adjust this path if needed
 
-cd ${SOURCE_DIR}
+# Change to CIME scripts directory
+cd "$CIME_DIR" || {
+    echo "Error: CIME directory not found"
+    exit 1
+}
 
-./create_newcase --case run1_1x1brazil --res 1x1_brazil --compset ${COMP} --mach ${MACH}
+# Set model and component parameters
+CIME_MODEL="cesm"
+COMP="2000_DATM%GSWP3v1_CLM51%FATES_SICE_SOCN_MOSART_SGLC_SWAV"
+RES="1x1_brazil"
+MACH="SI"
 
-cd run1_1x1brazil
+# Create new case
+./create_newcase --case "$CASE_DIR" --res "$RES" --compset "$COMP" --machine "$MACH" --run-unsupported
 
-./xmlchange --id STOP_N --val 1
-./xmlchange --id RUN_STARTDATE --val '2001-01-01'
-./xmlchange --id STOP_OPTION --val nyears
-./xmlchange --id DATM_CLMNCEP_YR_START --val 1996
-./xmlchange --id DATM_CLMNCEP_YR_END --val 1997
-./xmlchange --id ELM_FORCE_COLDSTART --val on
+# Change to the case directory
+cd "$CASE_DIR" || {
+    echo "Error: Case directory not found"
+    exit 1
+}
 
+# Change XML settings (some settings for a 1-year run)
+xmlchanges=(
+    "STOP_N=1"
+    "RUN_STARTDATE=2001-01-01"
+    "STOP_OPTION=nyears"
+    "DATM_YR_START=1996"
+    "DATM_YR_END=1997"
+    "CLM_FORCE_COLDSTART=on"
+    "DIN_LOC_ROOT=$CESM_INPUT_DIR"
+    "DIN_LOC_ROOT_CLMFORC=$CLMFORC_DIR"
+    "EXEROOT=$CASE_DIR/bld"
+    "RUNDIR=$CASE_DIR/run"
+    "DOUT_S_ROOT=$ARCHIVE_DIR"
+)
+
+# Apply XML changes
+for change in "${xmlchanges[@]}"; do
+    if ! ./xmlchange "$change"; then
+        echo "Error: Failed to apply XML change: $change"
+        exit 1
+    fi
+done
+
+# Set up the case
 ./case.setup
 
-# ./preview_namelists
-# ./check_input_data
-# ./check_input_data --download
+# Preview and check input data
+./preview_namelists
 
+./check_input_data
 
+./check_input_data --download
+
+# Build the case
 ./case.build
 
+# Submit the case to run
+./case.submit
+
+# Change to the archive directory for output processing
+cd "$ARCHIVE_DIR/lnd/hist"
+
+# Concatenate output files
+ncrcat *.h0.*.nc "Aggregated_${CASE_NAME}_Output.nc"
 
 ````
 
-<!--- ## OpenMPI
+- Make the script executable following: chmod +x ./ctsm_fates_test.sh
+- Run the script using ./ctsm_fates_test.sh
+- Open the concatenated .nc file "Aggregated_CTSM_FATES_TEST_Output.nc" using Panoply to visualize the output.
 
-```bash
-brew install open-mpi --cc=gcc-14 --build-from-source
-````
+I included the script in the [shell_scripts](./shell_scripts) directory.
 
- brew install mpich --cc=gcc-14 --build-from-source 
-
-## HDF5
-
-```bash
-brew install hdf5-mpi --cc=gcc-14 --build-from-source
-````
-
-brew install hdf5 --cc=gcc-14 --build-from-source
-
-## NETCDF
-
-```bash
-brew install pnetcdf --cc=gcc-14 --build-from-source 
-````
-
-Check installation by typing:
-
-```bash
-pnetcdf-config --all
-````
-
-## NETCDF
-```bash
-brew install netcdf --cc=gcc-14 --build-from-source 
-````
-Check installation by typing: 
-```bash
-nc-config --all
-````
-
-## NETCDF-FORTRAN
-```bash
-brew install netcdf-fortran --cc=gcc-14 --build-from-source 
-````
-Check installation by typing: 
-```bash
-nf-config
-````
-
-## To avoid potential problems with brew
-
-Homebrew always upgrades the packages when there is a new version. For example, if brew automatically upgrades gcc, then, packages like open-mpi or pnetcdf won't work properly. The solution is to tell brew to not update certain packages with the option brew pin.More details here:
-
-<https://docs.brew.sh/FAQ#how-do-i-stop-certain-formulae-from-being-updated>
-
-```bash
-brew pin gcc@14 
-brew pin open-mpi
-brew pin hdf5-mpi
-brew pin pnetcdf
-````
--->
+## If you followed these steps and everything worked, congratulations! You have successfully installed the required packages to run FATES and CLMT using Homebrew and source packages on MacOS Sonoma.

@@ -79,7 +79,3 @@ cd "$ARCHIVE_DIR/lnd/hist"
 
 # Concatenate output files
 ncrcat *.h0.*.nc "Aggregated_${CASE_NAME}_Output.nc"
-
-# Optional: View concatenated output (uncomment if needed)
-ncvue "Aggregated_${CASE_NAME}_Output.nc"
-

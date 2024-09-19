@@ -9,17 +9,20 @@ However, using Miniconda is easy because is nice to create environments and mana
 ### Installing Miniconda
 
 Go to:
-https://docs.anaconda.com/miniconda/
+<https://docs.anaconda.com/miniconda/>
 
 Download the installer for MacOS, click it, and follow the instructions.
 
 ### Use Python
+
 Miniconda install a python version. The installed version in my system is Python 3.12.4. You can check your version by typing in the terminal:
+
 ```bash
 python --version
 ```
 
 ### Create a new environment
+
 You can create a new environment by typing in the terminal:
 
 ```bash
@@ -37,10 +40,11 @@ conda activate test_env
 ```bash
 python --version
 ```
+
 It should be the same version that you installed in the environment.
 
 ### Check installed packages
-    
+
 ```bash
 conda list
 ```
@@ -72,7 +76,6 @@ This environment was created for testing purposes. You can delete it by typing i
 ```bash
 conda remove --name test_env --all
 ```
-
 
 ### Check available environments
 
