@@ -87,9 +87,15 @@ pyenv activate global
 pyenv deactivate gloval_python
 ````
 
+- Some packages to install in the virtual environment
+
+``` bash
+ pip install setuptools
+````
+
 # Python for FATES
 
-## The script to define pfts in fates requires the following python installation:
+## The script to define pfts in fates requires the following python installation
 
 - Check the version of python to install:
 
