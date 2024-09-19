@@ -544,7 +544,7 @@ export ESMF_COMM=mpich
 export ESMF_NETCDF=nc-config
 export ESMF_NETCDF_INCLUDE=/usr/local/netcdf/include
 export ESMF_NETCDF_LIBPATH=/usr/local/netcdf/lib
-export ESMF_NETCDF_LIBS='-lnetcdff -lnetcdf_c++ -lnetcdf'
+export ESMF_NETCDF_LIBS='-lnetcdff -lnetcdf'
 ````
 
 - Install as follows:
@@ -556,9 +556,14 @@ make -j8 check
 
 ## INSTALL CTSM
 
+Define which version of CTSM and FATES you need. Check it here:
+
+https://fates-users-guide.readthedocs.io/en/latest/user/Table-of-FATES-API-and-HLM-STATUS.html
+
 - Clone the CTSM repository to your home directory from the specified GitHub URL:
 
 ```bash
+cd ~ 
 git clone git@github.com:ESCOMP/CTSM.git --branch ctsm5.1.dev160 temp-folder && mv temp-folder CTSM_5_1_dev160
 ````
 
