@@ -16,7 +16,7 @@ Explore the metadata of the commit hash
 
 ```bash
 git show 069c226
-````   
+````
 
 Go to the desired commit hash
 
@@ -36,6 +36,26 @@ git submodule update --init --recursive
 cd components/elm/src/external_models/fates
 ````
 
-## Cmake file
+## cmake-macro for E3SM
 
-E3SM doesnt use config_mahines. Instead, it uses a cmake file.
+E3SM transitioned from config_compilers.xml to cmake-macros
+
+I provide my own gnu_SI.cmake file here as example. however, if you have a different config_compilers.xml file, you can use the prodived script to convert it to cmake-macros.
+
+How do you do this?
+
+There is a tool names converter in the directory:
+
+```bash
+/Users/XXX/E3SM/cime_config/machines/scripts
+````
+
+You need to provide the path where you have located your config_compilers.xml; this is in your .cime directory.
+
+```bash
+./converter /Users/XXX/.cime/config_compilers.xml
+````
+
+The converted cmake will be store in the directory where the script 'converter' is located.
+
+Copy that 'converted', or new .cmake file to your .cime directory.
