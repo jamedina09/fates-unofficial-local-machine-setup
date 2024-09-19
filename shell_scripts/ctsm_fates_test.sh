@@ -1,5 +1,8 @@
 #!/bin/bash
 
+rm -rf /Users/MedinaJA/projects/scratch/CTSM_FATES_TEST
+rm -rf /Users/MedinaJA/projects/archive/CTSM_FATES_TEST
+
 # Set up base directories
 HOME_DIR="$HOME"
 PROJECTS_DIR="$HOME_DIR/projects"
