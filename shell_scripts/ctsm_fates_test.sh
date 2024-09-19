@@ -1,66 +1,85 @@
 #!/bin/bash
 
-# Make this script executable with: chmod +x ./xxx.sh
-
-# Base directories
+# Set up base directories
 HOME_DIR="$HOME"
 PROJECTS_DIR="$HOME_DIR/projects"
 CTSM_VERSION="CTSM_5_1_dev160"
-SCRATCH_DIR="$PROJECTS_DIR/scratch/$CTSM_VERSION"
+SCRATCH_DIR="$PROJECTS_DIR/scratch"
 CTSM_DIR="$HOME_DIR/$CTSM_VERSION"
 CIME_DIR="$CTSM_DIR/cime/scripts"
-# GDRIVE_SCIENCE_DIR="$HOME_DIR/GDrive_Science/1_FATES_CASES"
+CASE_NAME="CTSM_FATES_TEST"
+CASE_DIR="$SCRATCH_DIR/$CASE_NAME"
+ARCHIVE_DIR="$SCRATCH_DIR/archive/$CASE_NAME"
 CESM_INPUT_DIR="$PROJECTS_DIR/inputdata"
 
-# Specific paths
-CASE_NAME="CTSM_FATES_TEST"
-# CASE_SUBPATH="system_test/$CASE_NAME"
-# CASE_DIR="$HOME_DIR/CASES_$CTSM_VERSION/$CASE_SUBPATH"
-ARCHIVE_DIR="$SCRATCH_DIR/archive/$CASE_SUBPATH"
-SCRATCH_CASE_DIR="$SCRATCH_DIR/$CASE_SUBPATH"
+CLMFORC_DIR="$CESM_INPUT_DIR/atm/datm7" # Adjust this path if needed
 
 # Change to CIME scripts directory
-cd "$CIME_DIR"
-
-# Query configuration (commented out since they're not used)
-# ./query_config --grids
-# ./query_config --compsets clm
+cd "$CIME_DIR" || {
+    echo "Error: CIME directory not found"
+    exit 1
+}
 
 # Set model and component parameters
 CIME_MODEL="cesm"
-# COMP="I2000Clm51Fates"
-COMP="2000_DATM%QIA_ELM%BGC-FATES_SICE_SOCN_SROF_SGLC_SWAV"
+COMP="2000_DATM%GSWP3v1_CLM51%FATES_SICE_SOCN_MOSART_SGLC_SWAV"
 RES="1x1_brazil"
 MACH="SI"
 
 # Create new case
 ./create_newcase --case "$CASE_DIR" --res "$RES" --compset "$COMP" --machine "$MACH" --run-unsupported
 
-# Change to the test case directory
-cd "$CASE_DIR"
+# Change to the case directory
+cd "$CASE_DIR" || {
+    echo "Error: Case directory not found"
+    exit 1
+}
 
-./xmlchange --id STOP_N --val 1
-./xmlchange --id RUN_STARTDATE --val '2001-01-01'
-./xmlchange --id STOP_OPTION --val nyears
-./xmlchange --id DATM_CLMNCEP_YR_START --val 1996
-./xmlchange --id DATM_CLMNCEP_YR_END --val 1997
-./xmlchange --id CLM_FORCE_COLDSTART --val on
+# Change XML settings (some settings for a 1-year run)
+xmlchanges=(
+    "STOP_N=1"
+    "RUN_STARTDATE=2001-01-01"
+    "STOP_OPTION=nyears"
+    "DATM_YR_START=1996"
+    "DATM_YR_END=1997"
+    "CLM_FORCE_COLDSTART=on"
+    "DIN_LOC_ROOT=$CESM_INPUT_DIR"
+    "DIN_LOC_ROOT_CLMFORC=$CLMFORC_DIR"
+    "EXEROOT=$CASE_DIR/bld"
+    "RUNDIR=$CASE_DIR/run"
+    "DOUT_S_ROOT=$ARCHIVE_DIR"
+)
 
+# Apply XML changes
+for change in "${xmlchanges[@]}"; do
+    if ! ./xmlchange "$change"; then
+        echo "Error: Failed to apply XML change: $change"
+        exit 1
+    fi
+done
+
+# Set up the case
 ./case.setup
 
-# ./preview_namelists
-# ./check_input_data
-# ./check_input_data --download
+# Preview and check input data
+./preview_namelists
 
+./check_input_data
+
+./check_input_data --download
+
+# Build the case
 ./case.build
 
+# Submit the case to run
 ./case.submit
 
-# Change to the archive directory
+# Change to the archive directory for output processing
 cd "$ARCHIVE_DIR/lnd/hist"
 
 # Concatenate output files
 ncrcat *.h0.*.nc "Aggregated_${CASE_NAME}_Output.nc"
 
-# View concatenated output
-# ncvue "Aggregated_${CASE_NAME}_Output.nc"
+# Optional: View concatenated output (uncomment if needed)
+ncvue "Aggregated_${CASE_NAME}_Output.nc"
+
