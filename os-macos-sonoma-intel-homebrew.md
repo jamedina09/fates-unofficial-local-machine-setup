@@ -1,4 +1,4 @@
-# Unofficail Guidelines for Manual Installation of Packages Required to run FATES and CLMT Using Homebrew and Source Packages on MacOS Sonoma
+# Unofficial Guidelines for Manual Installation of Packages Required to run FATES and CLMT Using Homebrew and Source Packages on MacOS Sonoma
 
 I am using a combination between Homebrew and source installation packages because of simplicity. With Sonoma, Apple have provided an updated Xcode version 15.0 (and Command Line Tools) which does not allow to install GCC from source; or I have not found a way to do it. With previos versions of MacOS, I was able to install GCC and the other packages from source. If you want a go at it, you can try to install GCC from source, and details are explained in [macOS Sonoma Source Installation - Intel](./os-macos-sonoma-intel.md). For simplicity, I will use Homebrew to install GCC, and then use that installation to install the other packages from source.
 
@@ -714,16 +714,12 @@ CTSM_DIR="$HOME_DIR/$CTSM_VERSION"
 CIME_DIR="$CTSM_DIR/cime/scripts"
 CASE_NAME="CTSM_FATES_TEST"
 CASE_DIR="$SCRATCH_DIR/$CASE_NAME"
-ARCHIVE_DIR="$SCRATCH_DIR/archive/$CASE_NAME"
+ARCHIVE_DIR="$PROJECTS_DIR/archive/$CASE_NAME"
 CESM_INPUT_DIR="$PROJECTS_DIR/inputdata"
-
 CLMFORC_DIR="$CESM_INPUT_DIR/atm/datm7" # Adjust this path if needed
 
 # Change to CIME scripts directory
-cd "$CIME_DIR" || {
-    echo "Error: CIME directory not found"
-    exit 1
-}
+cd "$CIME_DIR" || exit 1
 
 # Set model and component parameters
 CIME_MODEL="cesm"
@@ -735,10 +731,7 @@ MACH="SI"
 ./create_newcase --case "$CASE_DIR" --res "$RES" --compset "$COMP" --machine "$MACH" --run-unsupported
 
 # Change to the case directory
-cd "$CASE_DIR" || {
-    echo "Error: Case directory not found"
-    exit 1
-}
+cd "$CASE_DIR" || exit 1
 
 # Change XML settings (some settings for a 1-year run)
 xmlchanges=(
@@ -768,9 +761,6 @@ done
 
 # Preview and check input data
 ./preview_namelists
-
-./check_input_data
-
 ./check_input_data --download
 
 # Build the case
@@ -780,7 +770,13 @@ done
 ./case.submit
 
 # Change to the archive directory for output processing
-cd "$ARCHIVE_DIR/lnd/hist"
+ARCHIVE_HIST_DIR="$ARCHIVE_DIR/lnd/hist"
+if [[ ! -d "$ARCHIVE_HIST_DIR" ]]; then
+    echo "Error: Archive history directory not found at $ARCHIVE_HIST_DIR"
+    exit 1
+fi
+
+cd "$ARCHIVE_HIST_DIR" || exit 1
 
 # Concatenate output files
 ncrcat *.h0.*.nc "Aggregated_${CASE_NAME}_Output.nc"

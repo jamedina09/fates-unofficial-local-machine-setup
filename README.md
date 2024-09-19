@@ -22,7 +22,7 @@ Use at your own discretion.
 
 
 Choose the guide for your operating system:
-- [macOS Sonoma Homebrew & Source Installation - Intel](./os-macos-sonoma-intel-homebrew.md)
+- [macOS Sonoma Homebrew & Source Installation - Intel](./os-macos-sonoma-intel-homebrew.md) - **My preferred method**
 - [macOS Sonoma Source Installation - Intel](./os-macos-sonoma-intel.md)
 - [macOS Big Sur Source Installation - Intel](./os-macos-bigsur-intel.md)
 
