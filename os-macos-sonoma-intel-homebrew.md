@@ -2,6 +2,12 @@
 
 I am using a combination between Homebrew and source installation packages because of simplicity. With Sonoma, Apple have provided an updated Xcode version 15.0 (and Command Line Tools) which does not allow to install GCC from source; or I have not found a way to do it. With previos versions of MacOS, I was able to install GCC and the other packages from source. If you want a go at it, you can try to install GCC from source, and details are explained in [macOS Sonoma Source Installation - Intel](./os-macos-sonoma-intel.md). For simplicity, I will use Homebrew to install GCC, and then use that installation to install the other packages from source.
 
+There is key information about installation on the stackoverflow page:
+<https://stackoverflow.com/questions/77457782/linking-pnetcdf-netcdf-c-and-netcdf-fortran-libraries-for-an-earth-system-model>
+
+Another sweeth resource:
+<https://medium.com/@yonas.mersha14/installing-porting-running-community-earth-system-model-c5f6ebfc613e>
+
 ## Homebrew
 
 Homebrew is a package manager for macOS that simplifies the installation of software packages and libraries. It provides a convenient way to install, update, and manage software dependencies on macOS systems. Homebrew uses a formula system to define how software packages are built and installed, making it easy to install and maintain a wide range of software tools and libraries.
@@ -124,6 +130,8 @@ You'll notice that when I install any package using brew, I explicitly tell brew
 
 ## Installing packages from source
 
+Additional info: <https://github.com/Parallel-NetCDF/E3SM-IO/blob/master/docs/INSTALL.md>
+
 When installing software packages from source, it is essential to follow a consistent and organized approach to ensure that the build process is successful and that the software is correctly installed. Here are the general steps to install packages from source:
 
 Let's create a folder called "opt" in the home directory. In this folder, we will store all downloaded packages that will be installed from source.
@@ -190,12 +198,17 @@ cd mpich-4.2.2
 - Install MPICH in /usr/local/mpich-4.1.2 directory
 - Use specific GCC compiler versions for C, C++, and Fortran
 
+IMPORTANT: On Darwin with ESMF_COMPILER=gfortran and ESMF_COMM=mpich, using MPICH3 built from source, it is important to specify the -enable-two-level-namespace configure option when building the MPICH3 library.
+This was obtained from: <https://earthsystemmodeling.org/docs/nightly/develop/ESMF_usrdoc/node10.html>
+
 ```bash
 ./configure --prefix=/usr/local/mpich \
-CC=/usr/local/bin/gcc-14 \
-CXX=/usr/local/bin/g++-14 \
-FC=/usr/local/bin/gfortran-14 \
-FC77=/usr/local/bin/gfortran-14
+FFLAGS=$fallow_argument \
+FCFLAGS=$fallow_argument \
+CC=/usr/local/bin/gcc \
+CXX=/usr/local/bin/g++ \
+FC=/usr/local/bin/gfortran \
+FC77=/usr/local/bin/gfortran
 ````
 
 Note that i'm explicitly calling the gcc-14, g++-14, and gfortran-14 compilers. This may not be necessary as I have already created their symbolic links. However, I prefer to be explicit about it.
@@ -275,10 +288,10 @@ The last two lines are not necessary. I'm just being explicit about the compiler
 
 ```bash
 ./configure \
-CC=/usr/local/bin/gcc-14 \
-CXX=/usr/local/bin/g++-14 \
-FC=/usr/local/bin/gfortran-14 \
-FC77=/usr/local/bin/gfortran-14
+CC=/usr/local/bin/gcc \
+CXX=/usr/local/bin/g++ \
+FC=/usr/local/bin/gfortran \
+FC77=/usr/local/bin/gfortran
 ````
 
 - Build Expat using multiple CPU cores (specified by -j8)
@@ -291,6 +304,47 @@ sudo make -j8
 
 ```bash
 sudo make install
+````
+
+## Installing LAPACK and BLAS Libraries for C on Mac OS
+
+Note: These libraries are supposed to be installed in mac by default. I couldn't find them. To install them, follow either option below:
+
+- Homebrew:
+
+```bash
+brew install openblas
+brew install lapack
+````
+
+Note: When using homebrew, one dependency for these packages is gcc. Since we installed gcc from homebrew, this is not a problem. If you have installed gcc from source, then, installing these libraries from homebrew will download homebrew gcc and make a mess. I suggest always use the source installation indicated below
+
+- Source:
+
+```bash
+cd ~
+cd opt
+mkdir lapack
+cd lapack
+# download the tar file
+wget https://github.com/Reference-LAPACK/lapack/archive/refs/tags/v3.12.0.tar.gz
+# Unpack the tar file
+
+tar -xzvf v3.12.0.tar.gz
+
+# Change to the LAPACK source directory
+cd lapack-3.12.0
+
+# Copy the make.inc.example to make.inc
+cp make.inc.example make.inc
+
+# Compile the BLAS and LAPACK libraries
+make blaslib
+make lapacklib
+
+# Create symbolic links to the libraries
+ln -s /Users/MedinaJA/opt/lapack/lapack-3.12.0/librefblas.a /usr/local/lib/libblas.a
+ln -s /Users/MedinaJA/opt/lapack/lapack-3.12.0/liblapack.a /usr/local/lib/liblapack.a
 ````
 
 ## ZLIB
@@ -326,7 +380,7 @@ cd zlib-1.3.1
 - Configure the build process, specifying the installation prefix. This sets the destination directory for the installed files.
 
 ```bash
-./configure --prefix=/usr/local/hdf5_zlib
+./configure --prefix=/usr/local/zlib
 ````
 
 - Compile the code and run the tests, making use of multiple CPU cores (-j8).
@@ -366,8 +420,9 @@ cd hdf5-1.14.4-3
 - Configure the build process, specifying the zlib installation directory and installation prefix. Enabling Fortran and parallel features, and using the mpicc compiler for parallel support.
 
 ```bash
-./configure --with-zlib=/usr/local/hdf5_zlib \
---prefix=/usr/local/hdf5_zlib \
+./configure --with-zlib=/usr/local/zlib \
+--prefix=/usr/local/hdf5 \
+--enable-hl \
 --enable-fortran \
 --enable-parallel \
 CC=/usr/local/mpich/bin/mpicc \
@@ -389,7 +444,75 @@ sudo make -j8 check
 - Add HDF5 binaries to the PATH environment variable.
 
 ```bash
-echo 'export PATH=/usr/local/hdf5_zlib/bin:$PATH' >> ~/.zshrc
+echo 'export PATH=/usr/local/hdf5/bin:$PATH' >> ~/.zshrc
+source ~/.zshrc
+````
+
+### PnetCDF
+
+PnetCDF (Parallel netCDF) is a parallel I/O library that extends the capabilities of the NetCDF (Network Common Data Form) software suite to support parallel read and write operations on large datasets. PnetCDF is designed for use in high-performance computing environments, where efficient I/O operations are essential for processing and analyzing large-scale scientific data. It provides a scalable and flexible solution for parallel I/O tasks, enabling applications to achieve optimal performance when working with distributed data.
+
+- Navigate to the home directory and create a folder named "pnetcdf" to work in.
+
+```bash
+cd ~/opt
+mkdir pnetcdf
+cd pnetcdf
+````
+
+- Download thepnetcdf source code archive from the provided URL.
+
+```bash
+wget https://parallel-netcdf.github.io/Release/pnetcdf-1.13.0.tar.gz
+````
+
+- Extract the downloaded archive.
+
+```bash
+tar -zxf pnetcdf-1.13.0.tar.gz
+````
+
+- Move into the extracted directory.
+
+```bash
+cd pnetcdf-1.13.0
+````
+
+- Configure the build process, specifying the installation prefix and using the mpicc compiler for parallel support.
+
+About the argument FFLAGS, check:
+<https://stackoverflow.com/questions/77494613/gfortran-type-mismatch-error-despite-fallow-argument-mismatch-flag>
+
+This one takes some time to install, so hang in there.
+
+```bash
+./configure \
+FFLAGS="-fallow-argument-mismatch -fallow-invalid-boz" \
+--prefix=/usr/local/pnetcdf \
+--with-mpi=/usr/local/mpich \
+--enable-fortran \
+--enable-profiling \
+--enable-shared \
+--enable-static \
+CC=mpicc \
+CXX=mpicxx \
+FC=mpif90 \
+FC77=mpif77
+````
+
+- Compile the code and run tests using multiple CPU cores (-j8).
+
+I included testing in the make command. If you want to skip testing, you can remove the check option.
+
+```bash
+sudo make -j8 install
+sudo make -j8 check
+````
+
+- Add pnetcdf binaries to the PATH environment variable.
+
+```bash
+echo 'export PATH=/usr/local/pnetcdf/bin:$PATH' >> ~/.zshrc
 source ~/.zshrc
 ````
 
@@ -423,13 +546,14 @@ tar -zxvf netcdf-c-4.9.2.tar.gz
 cd netcdf-c-4.9.2
 ````
 
-- Set compiler and linker flags for HDF5 and zlib libraries. Configure the build process, specifying installation prefix and enabling parallel tests.
+- Set compiler and linker flags for HDF5, zlib, and pnetcdf libraries. Configure the build process, specifying installation prefix and enabling parallel tests.
 
 ```bash
 ./configure \
-CPPFLAGS=-I/usr/local/hdf5_zlib/include \
-LDFLAGS=-L/usr/local/hdf5_zlib/lib \
+CPPFLAGS="-I/usr/local/hdf5/include -I/usr/local/zlib/include -I/usr/local/pnetcdf/include" \
+LDFLAGS="-L/usr/local/hdf5/lib -L/usr/local/zlib/lib -L/usr/local/pnetcdf/lib" \
 --prefix=/usr/local/netcdf \
+--enable-pnetcdf \
 --enable-parallel-tests \
 CC=mpicc \
 CXX=mpicxx \
@@ -453,10 +577,11 @@ echo 'export PATH=/usr/local/netcdf/bin:$PATH' >> ~/.zshrc
 source ~/.zshrc
 ````
 
-- Check NetCDF configuration using nc-config.
+- Check netCDF-C installation parameters.
 
 ```bash
-nc-config --all
+nc-conﬁg --version
+nc-conﬁg --all
 ````
 
 ## NETCDF-FORTRAN
@@ -488,8 +613,9 @@ cd netcdf-fortran-4.6.1
 
 ```bash
 ./configure \
-CPPFLAGS=-I/usr/local/netcdf/include \
-LDFLAGS=-L/usr/local/netcdf/lib \
+CPPFLAGS="-I/usr/local/hdf5/include -I/usr/local/zlib/include -I/usr/local/netcdf/include" \
+FFLAGS="-fallow-argument-mismatch -fallow-invalid-boz" \
+LDFLAGS="-L/usr/local/hdf5/lib -L/usr/local/zlib/lib -L/usr/local/netcdf/lib" \
 --prefix=/usr/local/netcdf \
 --enable-parallel-tests \
 CC=mpicc \
@@ -520,8 +646,7 @@ The link to download is here: <https://earthsystemmodeling.org/>
 - Create a folder in the home directory to install ESMF.
 
 ```bash
-cd ~
-cd opt
+cd ~/opt
 mkdir esmf
 cd esmf
 ````
@@ -538,12 +663,25 @@ cd esmf-8.6.1
 
 ```bash
 export ESMF_DIR=/Users/MedinaJA/opt/esmf/esmf-8.6.1
-export ESMF_COMPILER=gfortran
-export ESMF_COMM=mpich
-export ESMF_NETCDF=nc-config
-export ESMF_NETCDF_INCLUDE=/usr/local/netcdf/include
-export ESMF_NETCDF_LIBPATH=/usr/local/netcdf/lib
-export ESMF_NETCDF_LIBS='-lnetcdff -lnetcdf'
+export ESMF_COMPILER="gfortran"
+export ESMF_COMM="mpich"
+export ESMF_LAPACK="system"
+export ESMF_LAPACK_LIBPATH="/usr/local/lib"
+export ESMF_LAPACK_LIBS='-llapack -lblas'
+export ESMF_NETCDF="nc-config"
+export ESMF_NETCDF_INCLUDE="/usr/local/netcdf/include"
+export ESMF_NETCDF_LIBPATH="/usr/local/netcdf/lib"
+export ESMF_NETCDF_LIBS='-lnetcdff -lnetcdf -lhdf5_hl -lhdf5'
+export ESMF_PNETCDF="pnetcdf-config"
+export ESMF_PNETCDF_INCLUDE="/usr/local/pnetcdf/include"
+export ESMF_PNETCDF_LIBPATH="/usr/local/pnetcdf/lib"
+export ESMF_PNETCDF_LIBS='-lpnetcdf'
+````
+
+- Check configuration:
+
+```bash
+make info
 ````
 
 - Install as follows:
@@ -598,18 +736,18 @@ cd CTSM_5_1_dev160
 
 In your home directory, you need to have a folder called .cime. Inside this folder, there are a couple fo files that you need to modify. More details can be found here:
 
-<https://esmci.github.io/cime/versions/master/html/users_guide/porting-cime.html>
+https://esmci.github.io/cime/versions/master/html/users_guide/machine.html#
 
-I have provided my own files in the folder 'personal_cime_configuration_files'. You can download them and modify them according to your needs.
+I have provided my own files in the directory 'personal_cime_configuration_files'. You can download them and modify them according to your needs.
 
 There are a couple of key points that I need to highlight.
 
 You need to include the path for the nuopc driver. In my case, I have the following path:
 
 ```bash
-<environment_variables comp_interface="nuopc"> <env
-name="ESMFMKFILE">/Users/MedinaJA/opt/esmf/esmf-8.6.1/lib/libO/Darwin.gfortran.64.mpich.default/esmf.mk</env>
-</environment_variables>
+    <environment_variables comp_interface="nuopc">
+      <env name="ESMFMKFILE">/Users/MedinaJA/opt/esmf/esmf-8.6.1/lib/libO/Darwin.gfortran.64.mpich.default/esmf.mk</env>
+    </environment_variables>
 ````
 
 ## Additional packages
@@ -663,6 +801,7 @@ cd nco-5.1.7
 
 ```bash
 ./configure --prefix=/usr/local/nco \
+  --enable-fortran \
   NETCDF_ROOT=/usr/local/netcdf \
   CPPFLAGS=-I/usr/local/include \
   LDFLAGS=-L/usr/local/lib \
@@ -789,4 +928,4 @@ ncrcat *.h0.*.nc "Aggregated_${CASE_NAME}_Output.nc"
 
 I included the script in the [shell_scripts](./shell_scripts) directory.
 
-## If you followed these steps and everything worked, congratulations! You have successfully installed the required packages to run FATES and CLMT using Homebrew and source packages on MacOS Sonoma.
+## If you followed these steps and everything worked, congratulations! You have successfully installed the required packages to run FATES and CLMT using Homebrew and source packages on MacOS Sonoma
