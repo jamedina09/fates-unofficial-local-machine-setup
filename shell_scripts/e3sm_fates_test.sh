@@ -1,3 +1,7 @@
+# NOTE: check bellow
+# https://bb.cgd.ucar.edu/cesm/threads/port-machine-to-ubuntu-error.7934/
+
+
 #!/bin/bash
 
 rm -rf /Users/MedinaJA/projects/scratch/E3SM_FATES_TEST
@@ -25,6 +29,8 @@ COMP="2000_DATM%QIA_ELM%BGC-FATES_SICE_SOCN_SROF_SGLC_SWAV"
 RES="1x1_brazil"
 MACH="SI"
 COMPILER="gnu"
+
+# export CIME_NO_CMAKE_MACRO=1
 
 # Create new case
 ./create_newcase --case "$CASE_DIR" --res "$RES" --compset "$COMP" --machine "$MACH" --compiler=${COMPILER}
@@ -58,35 +64,7 @@ for change in "${xmlchanges[@]}"; do
     fi
 done
 
-./xmlchange PIO_VERSION=2
-./xmlchange NTASKS_ATM=1
-./xmlchange NTASKS_CPL=1
-./xmlchange NTASKS_GLC=1
-./xmlchange NTASKS_OCN=1
-./xmlchange NTASKS_WAV=1
-./xmlchange NTASKS_ICE=1
-./xmlchange NTASKS_LND=1
-./xmlchange NTASKS_ROF=1
-./xmlchange NTASKS_ESP=1
-./xmlchange ROOTPE_ATM=0
-./xmlchange ROOTPE_CPL=0
-./xmlchange ROOTPE_GLC=0
-./xmlchange ROOTPE_OCN=0
-./xmlchange ROOTPE_WAV=0
-./xmlchange ROOTPE_ICE=0
-./xmlchange ROOTPE_LND=0
-./xmlchange ROOTPE_ROF=0
-./xmlchange ROOTPE_ESP=0
-./xmlchange NTHRDS_ATM=1
-./xmlchange NTHRDS_CPL=1
-./xmlchange NTHRDS_GLC=1
-./xmlchange NTHRDS_OCN=1
-./xmlchange NTHRDS_WAV=1
-./xmlchange NTHRDS_ICE=1
-./xmlchange NTHRDS_LND=1
-./xmlchange NTHRDS_ROF=1
-./xmlchange NTHRDS_ESP=1
-
+export CIME_NO_CMAKE_MACRO=1
 
 # Set up the case
 ./case.setup
@@ -98,7 +76,7 @@ done
 # ./check_input_data --download
 
 # Build the case
-./case.build --debug
+./case.build
 #  --debug --verbose --separate-builds --ninja
 #   -d, --debug           Print debug information (very verbose) to file /Users/MedinaJA/projects/scratch/E3SM_FATES_TEST/case.build.log
 
