@@ -686,6 +686,8 @@ make info
 
 - Install as follows:
 
+This is gonna take a while. Hang in there.
+
 ```bash
 make -j8
 make -j8 check
@@ -736,7 +738,7 @@ cd CTSM_5_1_dev160
 
 In your home directory, you need to have a folder called .cime. Inside this folder, there are a couple fo files that you need to modify. More details can be found here:
 
-https://esmci.github.io/cime/versions/master/html/users_guide/machine.html#
+<https://esmci.github.io/cime/versions/master/html/users_guide/machine.html#>
 
 I have provided my own files in the directory 'personal_cime_configuration_files'. You can download them and modify them according to your needs.
 
@@ -745,9 +747,9 @@ There are a couple of key points that I need to highlight.
 You need to include the path for the nuopc driver. In my case, I have the following path:
 
 ```bash
-    <environment_variables comp_interface="nuopc">
-      <env name="ESMFMKFILE">/Users/MedinaJA/opt/esmf/esmf-8.6.1/lib/libO/Darwin.gfortran.64.mpich.default/esmf.mk</env>
-    </environment_variables>
+<environment_variables comp_interface="nuopc">
+  <env name="ESMFMKFILE">/Users/MedinaJA/opt/esmf/esmf-8.6.1/lib/libO/Darwin.gfortran.64.mpich.default/esmf.mk</env>
+</environment_variables>
 ````
 
 ## Additional packages
@@ -841,53 +843,108 @@ Now that we have installed all required packages, let's run a test to check if e
 - Create a shell script named ctsm_fates_test.sh and copy the following code into it:
 
 ```bash
-
 #!/bin/bash
 
-# Set up base directories
+# ------------------------------------------------------------------
+# Shell script to set up and run a CTSM_FATES_TEST case
+# ------------------------------------------------------------------
+
+# ------------------------------------------------------------------
+# Cleanup previous test directories if they exist
+# Remove old scratch and archive directories to start fresh
+# ------------------------------------------------------------------
+rm -rf /Users/MedinaJA/projects/scratch/CTSM_FATES_TEST
+rm -rf /Users/MedinaJA/projects/archive/CTSM_FATES_TEST
+
+# ------------------------------------------------------------------
+# Define base directories and case parameters
+# ------------------------------------------------------------------
+
+# HOME_DIR is the user's home directory
 HOME_DIR="$HOME"
+
+# PROJECTS_DIR is the directory containing all project files
 PROJECTS_DIR="$HOME_DIR/projects"
+
+# CTSM version and its directory
 CTSM_VERSION="CTSM_5_1_dev160"
-SCRATCH_DIR="$PROJECTS_DIR/scratch"
 CTSM_DIR="$HOME_DIR/$CTSM_VERSION"
+
+# CIME script directory where CIME commands are located
 CIME_DIR="$CTSM_DIR/cime/scripts"
+
+# Scratch and archive directories for the case
+SCRATCH_DIR="$PROJECTS_DIR/scratch"
+
+# Case-specific directories
 CASE_NAME="CTSM_FATES_TEST"
 CASE_DIR="$SCRATCH_DIR/$CASE_NAME"
+
+# Archive directory for storing model output
 ARCHIVE_DIR="$PROJECTS_DIR/archive/$CASE_NAME"
+
+# Input data directories
 CESM_INPUT_DIR="$PROJECTS_DIR/inputdata"
-CLMFORC_DIR="$CESM_INPUT_DIR/atm/datm7" # Adjust this path if needed
+CLMFORC_DIR="$CESM_INPUT_DIR/atm/datm7" # CLM forcing data directory (adjust path if necessary)
 
-# Change to CIME scripts directory
-cd "$CIME_DIR" || exit 1
+# ------------------------------------------------------------------
+# Navigate to the CIME scripts directory
+# ------------------------------------------------------------------
+cd "$CIME_DIR" || {
+    echo "Error: CIME directory not found. Exiting."
+    exit 1
+}
 
-# Set model and component parameters
+# ------------------------------------------------------------------
+# Set up model and component parameters for the simulation
+# ------------------------------------------------------------------
+
+# Model type: using CESM model
 CIME_MODEL="cesm"
-COMP="2000_DATM%GSWP3v1_CLM51%FATES_SICE_SOCN_MOSART_SGLC_SWAV"
-RES="1x1_brazil"
-MACH="SI"
 
-# Create new case
+# Compset defines model components: FATES + land, ocean, and ice models
+COMP="2000_DATM%GSWP3v1_CLM51%FATES_SICE_SOCN_MOSART_SGLC_SWAV"
+
+# Resolution setting for Brazil region
+RES="1x1_brazil"
+
+# Machine name (use the specific machine configuration)
+MACH="STRI-L30666"
+
+# ------------------------------------------------------------------
+# Create a new case with the specified parameters
+# ------------------------------------------------------------------
 ./create_newcase --case "$CASE_DIR" --res "$RES" --compset "$COMP" --machine "$MACH" --run-unsupported
 
-# Change to the case directory
-cd "$CASE_DIR" || exit 1
+# ------------------------------------------------------------------
+# Navigate to the newly created case directory
+# ------------------------------------------------------------------
+cd "$CASE_DIR" || {
+    echo "Error: Case directory not found. Exiting."
+    exit 1
+}
 
-# Change XML settings (some settings for a 1-year run)
+# ------------------------------------------------------------------
+# Apply XML changes to configure the run
+# These settings configure the model run (e.g., run length, forcing data)
+# ------------------------------------------------------------------
+
+# List of XML changes to be applied
 xmlchanges=(
-    "STOP_N=1"
-    "RUN_STARTDATE=2001-01-01"
-    "STOP_OPTION=nyears"
-    "DATM_YR_START=1996"
-    "DATM_YR_END=1997"
-    "CLM_FORCE_COLDSTART=on"
-    "DIN_LOC_ROOT=$CESM_INPUT_DIR"
-    "DIN_LOC_ROOT_CLMFORC=$CLMFORC_DIR"
-    "EXEROOT=$CASE_DIR/bld"
-    "RUNDIR=$CASE_DIR/run"
-    "DOUT_S_ROOT=$ARCHIVE_DIR"
+    "STOP_N=1"                          # Run for 1 year
+    "RUN_STARTDATE=2001-01-01"          # Set the start date of the simulation
+    "STOP_OPTION=nyears"                # Stop the simulation after 1 year
+    "DATM_YR_START=1996"                # Start year of the atmospheric forcing data
+    "DATM_YR_END=1997"                  # End year of the atmospheric forcing data
+    "CLM_FORCE_COLDSTART=on"            # Force cold start for CLM model
+    "DIN_LOC_ROOT=$CESM_INPUT_DIR"      # Set the root directory for input data
+    "DIN_LOC_ROOT_CLMFORC=$CLMFORC_DIR" # Set the directory for CLM forcing data
+    "EXEROOT=$CASE_DIR/bld"             # Directory for compiled executable
+    "RUNDIR=$CASE_DIR/run"              # Directory for runtime outputs
+    "DOUT_S_ROOT=$ARCHIVE_DIR"          # Directory for storing archived outputs
 )
 
-# Apply XML changes
+# Loop through and apply each XML change
 for change in "${xmlchanges[@]}"; do
     if ! ./xmlchange "$change"; then
         echo "Error: Failed to apply XML change: $change"
@@ -895,31 +952,55 @@ for change in "${xmlchanges[@]}"; do
     fi
 done
 
-# Set up the case
+# ------------------------------------------------------------------
+# Set up the case (e.g., creating necessary files and directories)
+# ------------------------------------------------------------------
 ./case.setup
 
-# Preview and check input data
+# ------------------------------------------------------------------
+# Preview the namelists and check the required input data
+# --download flag ensures missing input data is automatically downloaded
+# ------------------------------------------------------------------
 ./preview_namelists
 ./check_input_data --download
 
-# Build the case
+# ------------------------------------------------------------------
+# Build the case (compiles the model with the chosen configuration)
+# ------------------------------------------------------------------
 ./case.build
 
-# Submit the case to run
+# ------------------------------------------------------------------
+# Submit the case to the job scheduler to run the simulation
+# ------------------------------------------------------------------
 ./case.submit
 
-# Change to the archive directory for output processing
+# ------------------------------------------------------------------
+# Post-processing: Move to the archive history directory for output processing
+# ------------------------------------------------------------------
+
+# Define the archive directory for model output history files
 ARCHIVE_HIST_DIR="$ARCHIVE_DIR/lnd/hist"
+
+# Check if the history directory exists
 if [[ ! -d "$ARCHIVE_HIST_DIR" ]]; then
     echo "Error: Archive history directory not found at $ARCHIVE_HIST_DIR"
     exit 1
 fi
 
-cd "$ARCHIVE_HIST_DIR" || exit 1
+# Change to the archive history directory
+cd "$ARCHIVE_HIST_DIR" || {
+    echo "Error: Could not change to archive history directory. Exiting."
+    exit 1
+}
 
-# Concatenate output files
+# ------------------------------------------------------------------
+# Concatenate NetCDF history output files into a single file
+# ------------------------------------------------------------------
 ncrcat *.h0.*.nc "Aggregated_${CASE_NAME}_Output.nc"
 
+# ------------------------------------------------------------------
+# End of script
+# ------------------------------------------------------------------
 ````
 
 - Make the script executable following: chmod +x ./ctsm_fates_test.sh
