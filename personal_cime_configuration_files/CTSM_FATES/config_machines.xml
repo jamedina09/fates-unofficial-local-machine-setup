@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<config_machines version="3.0">
+  <machine MACH="MACHINE_NAME">
+    <DESC>MACHINE_NAME - JA Medina-Vega</DESC>
+    <NODENAME_REGEX>MACHINE_NAME</NODENAME_REGEX>
+    <OS>Darwin</OS>
+    <COMPILERS>gnu</COMPILERS>
+    <MPILIBS>mpich</MPILIBS>
+    <CIME_OUTPUT_ROOT>$ENV{HOME}/projects/scratch</CIME_OUTPUT_ROOT>
+    <DIN_LOC_ROOT>$ENV{HOME}/projects/inputdata/</DIN_LOC_ROOT>
+    <DIN_LOC_ROOT_CLMFORC>$ENV{HOME}/projects/inputdata/atm/datm7</DIN_LOC_ROOT_CLMFORC>
+    <DOUT_S_ROOT>$ENV{HOME}/projects/scratch/archive/$CASE</DOUT_S_ROOT>
+    <BASELINE_ROOT>$ENV{HOME}/projects/baselines</BASELINE_ROOT>
+    <CCSM_CPRNC>$ENV{HOME}/cesm/tools/cprnc/cprnc</CCSM_CPRNC>
+    <GMAKE>make</GMAKE>
+    <GMAKE_J>8</GMAKE_J>
+    <BATCH_SYSTEM>none</BATCH_SYSTEM>
+    <SUPPORTED_BY>JA Medina-Vega</SUPPORTED_BY>
+    <MAX_TASKS_PER_NODE>8</MAX_TASKS_PER_NODE>
+    <MAX_MPITASKS_PER_NODE>8</MAX_MPITASKS_PER_NODE>
+    <mpirun mpilib="default">
+      <!-- <executable>mpirun</executable> -->
+      <executable>mpiexec</executable>
+      <arguments>
+        <arg name="anum_tasks"> -np $TOTALPES</arg>
+        <arg name="labelstdout">--prepend-rank</arg>
+      </arguments>
+    </mpirun>
+    <module_system type="none" allow_error="true">
+    </module_system>
+    <environment_variables>
+      <env name="NETCDF_PATH">/usr/local/netcdf</env>
+      <env name="PNETCDF_PATH">/usr/local/pnetcdf</env>
+    </environment_variables>
+    <environment_variables comp_interface="nuopc">
+      <env name="ESMFMKFILE">/Users/MedinaJA/opt/esmf/esmf-8.6.1/lib/libO/Darwin.gfortran.64.mpich.default/esmf.mk</env>
+    </environment_variables>
+  </machine>
+</config_machines>
+

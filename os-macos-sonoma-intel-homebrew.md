@@ -909,7 +909,7 @@ COMP="2000_DATM%GSWP3v1_CLM51%FATES_SICE_SOCN_MOSART_SGLC_SWAV"
 RES="1x1_brazil"
 
 # Machine name (use the specific machine configuration)
-MACH="STRI-L30666"
+MACH="MACHINE_NAME"
 
 # ------------------------------------------------------------------
 # Create a new case with the specified parameters

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<config_compilers version="2.0">
+      <compiler COMPILER="gnu" MACH="MACHINE_NAME">
+            <!-- Darwin -->
+            <CPPDEFS>
+                  <append>-DFORTRANUNDERSCORE -DNO_R16</append>
+            </CPPDEFS>
+            <LDFLAGS>
+                  <append compile_threaded="TRUE"> -fopenmp </append>
+            </LDFLAGS>
+            <FFLAGS>
+                  <append> -fallow-argument-mismatch -fallow-invalid-boz</append>
+            </FFLAGS>
+            <SFC> /usr/local/bin/gfortran </SFC>
+            <SCC> /usr/local/bin/gcc </SCC>
+            <SCXX> /usr/local/bin/g++ </SCXX>
+            <MPIFC> /usr/local/mpich/bin/mpif90 </MPIFC>
+            <MPICC> /usr/local/mpich/bin/mpicc  </MPICC>
+            <MPICXX> /usr/local/mpich/bin/mpicxx </MPICXX>
+            <CXX_LINKER>FORTRAN</CXX_LINKER>
+            <SUPPORTS_CXX>TRUE</SUPPORTS_CXX>
+            <NETCDF_PATH>/usr/local/netcdf</NETCDF_PATH>
+            <PNETCDF_PATH>/usr/local/pnetcdf</PNETCDF_PATH>
+            <SLIBS>
+                  <append>$(shell $(NETCDF_PATH)/bin/nf-config --flibs) -framework Accelerate</append>
+            </SLIBS>
+            <SLIBS>
+                  <append>-L/usr/local/netcdf/lib -lnetcdff -lnetcdf -lm</append>
+                  <append>-L/usr/local/lib -llapack -lblas</append>
+            </SLIBS>
+      </compiler>
+</config_compilers>
