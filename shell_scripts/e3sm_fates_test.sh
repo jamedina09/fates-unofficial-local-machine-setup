@@ -70,8 +70,7 @@ MACH="STRI-L30666"
 # ------------------------------------------------------------------
 # Create a new case with the specified parameters
 # ------------------------------------------------------------------
-./create_newcase --case "$CASE_DIR" --res "$RES" --compset "$COMP" --machine "$MACH" --compiler=${COMPILER}
-# --run-unsupported
+./create_newcase --case "$CASE_DIR" --res "$RES" --compset "$COMP" --machine "$MACH" 
 
 # ------------------------------------------------------------------
 # Navigate to the newly created case directory
