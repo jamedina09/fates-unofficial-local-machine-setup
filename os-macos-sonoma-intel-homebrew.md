@@ -86,47 +86,8 @@ Check wether the symbolic links were created successfully by typing:
 ```bash
 gcc --version
 g++ --version
-gfortran --version
-
+# gfortran --version
 ````
-
-## Modify brew env variables
-
-If you install packages using brew, you may want to use gcc-14 by default. To do this, you need to set the environment variables HOMEBREW_CC and HOMEBREW_CXX to gcc-14 and g++-14, respectively.
-
-- Check the environment variables used by default by brew by typing:
-
-```bash
-brew --env
-````
-
-- To have brew always use gcc, add the following to your .zshrc (or .bash_profile) file:
-
-```bash
-alias brew='HOMEBREW_CC=gcc-14 HOMEBREW_CXX=g++-14 brew'
-````
-
-- source the .zshrc file to apply the changes.
-
-```bash
-source ~/.zshrc
-````
-
-- Check the environment variables used by brew again:
-
-```bash
-brew --env
-````
-
-The output should show the new environment variables.
-
-```bash
-HOMEBREW_CC: gcc-14
-HOMEBREW_CXX: g++-14
-...
-````
-
-You'll notice that when I install any package using brew, I explicitly tell brew to use gcc-14 (i.e., --cc=gcc-14). This may not be necessary as I have already set the environment variables to use gcc-14. However, I prefer to be explicit about it.
 
 ## Installing packages from source
 
@@ -205,10 +166,10 @@ This was obtained from: <https://earthsystemmodeling.org/docs/nightly/develop/ES
 ./configure --prefix=/usr/local/mpich \
 FFLAGS=$fallow_argument \
 FCFLAGS=$fallow_argument \
-CC=/usr/local/bin/gcc \
-CXX=/usr/local/bin/g++ \
-FC=/usr/local/bin/gfortran \
-FC77=/usr/local/bin/gfortran
+CC=/usr/local/bin/gcc-14 \
+CXX=/usr/local/bin/g++-14 \
+FC=/usr/local/bin/gfortran-14 \
+FC77=/usr/local/bin/gfortran-14
 ````
 
 Note that i'm explicitly calling the gcc-14, g++-14, and gfortran-14 compilers. This may not be necessary as I have already created their symbolic links. However, I prefer to be explicit about it.
@@ -288,10 +249,10 @@ The last two lines are not necessary. I'm just being explicit about the compiler
 
 ```bash
 ./configure \
-CC=/usr/local/bin/gcc \
-CXX=/usr/local/bin/g++ \
-FC=/usr/local/bin/gfortran \
-FC77=/usr/local/bin/gfortran
+CC=/usr/local/bin/gcc-14 \
+CXX=/usr/local/bin/g++-14 \
+FC=/usr/local/bin/gfortran-14 \
+FC77=/usr/local/bin/gfortran-14
 ````
 
 - Build Expat using multiple CPU cores (specified by -j8)
