@@ -90,7 +90,7 @@ pyenv deactivate gloval_python
 - Some packages to install in the virtual environment
 
 ``` bash
- pip install setuptools
+pip install setuptools
 ````
 
 # Python for FATES
